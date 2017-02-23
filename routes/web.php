@@ -93,3 +93,5 @@ Route::post('/gettypeswithadmin', 'AdminController@gettypeswithadmin');
 Route::post('/getproductsbyadmin', 'AdminController@getproductsbyadmin');
 Route::get('{locale}/updateproductbtadmin/{product_id}', 'AdminController@updateproductbtadmin');
 Route::post('/updatedproductbyadmin', 'AdminController@updatedproductbyadmin');
+
+//////////////////
