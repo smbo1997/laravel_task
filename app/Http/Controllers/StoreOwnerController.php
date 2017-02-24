@@ -237,4 +237,16 @@ class StoreOwnerController extends Controller
                     ->delete();
         return redirect()->back();
     }
+
+    public function bouthproducts(Request $request,$lang){
+        $userid = Auth::user()->id;
+           $get = Product::select('users.name','products.product_price','products.product_image','baskets.count','baskets.created_at')
+                       ->where('products.user_id',$userid)
+                        ->rightJoin('baskets','products.product_id','=','baskets.product_id')
+                        ->where('baskets.status',1)
+                        ->leftJoin('users','users.id','=','baskets.user_id')
+                        ->get();
+            $this->data['bouthproducts']=$get;
+        return view('bouthproducts')->with($this->data);
+    }
 }

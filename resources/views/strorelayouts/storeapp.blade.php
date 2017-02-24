@@ -61,6 +61,9 @@
                                     {{ csrf_field() }}
                                 </form>
                             </li>
+                            @can('is_user',new \App\User())
+                                <li><a href="{{url($language.'/mycard')}}">{{trans('translate.my_card')}}</a></li>
+                            @endcan
                         </ul>
                     </li>
                 @endif

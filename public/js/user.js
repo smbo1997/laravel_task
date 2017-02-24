@@ -20,16 +20,15 @@ $(document).ready(function () {
     setInterval(myfunc, 3000);
     
     $('.buymyproduct').click(function () {
-        var productid = $(this).attr('id');
-        var quantity = $(this).val();
+        var basketid = $(this).val();
         var token = $("input[name=_token]").val();
         $.ajax({
             url:'/buymyproduct',
             type:'POST',
-            data:{_token:token,productid:productid,quantity:quantity},
+            data:{_token:token,basketid:basketid},
             success: function (data) {
                 if(data.data = 1){
-                    $('#myProduct_'+productid).remove();
+                    $('#myProduct_'+basketid).remove();
                 }
             }
         });
@@ -41,7 +40,7 @@ $(document).ready(function () {
        var myfind =  $(".myactions").find("button");
        if(myfind.length>0){
            $.each(myfind,function (key,value) {
-               data.push($(value).attr('id'));
+               data.push($(value).val());
            });
            $.ajax({
                url:'/buyall',

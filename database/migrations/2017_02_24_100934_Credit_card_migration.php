@@ -4,18 +4,18 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class MyBasketMigration extends Migration
+class CreditCardMigration extends Migration
 {
     public function up()
     {
-        Schema::create('baskets', function (Blueprint $table) {
-            $table->increments('basket_id');
+        Schema::create('creditcards', function (Blueprint $table) {
+            $table->increments('card_id');
             $table->integer('user_id')->unsigned();
-            $table->integer('product_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('product_id')->references('product_id')->on('products');
-            $table->integer('count');
-            $table->integer('status');
+            $table->string('card_no');
+            $table->string('exp_month');
+            $table->string('exp_year');
+            $table->string('cvc');
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ class MyBasketMigration extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('baskets');
+        Schema::dropIfExists('creditcards');
     }
 }

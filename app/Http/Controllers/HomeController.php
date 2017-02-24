@@ -25,7 +25,7 @@ class HomeController extends Controller
         $this->data['language']=$language;
         $this->language = $language;
         $this->middleware('auth');
-    }
+}
 
     /**
      * Show the application dashboard.

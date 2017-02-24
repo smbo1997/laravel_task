@@ -14,22 +14,18 @@
                 </tr>
                 </thead>
                 <tbody class="clearetable">
-                @if($gotproducts)
+                @if(!empty($gotproducts))
                     @foreach($gotproducts as $key=>$value)
-                            @foreach($value as $key1=>$item)
-                            @foreach($item as $key1=>$item1)
-                                <tr id="myProduct_{{$item1->product_id}}">
-                                    <td>{{$key}}</td>
-                                    <td>{{$item1->product_name}}</td>
-                                    <td>{{$item1->product_price}}</td>
-                                    <td><img src="{{URL::asset('products_images/'.$item1->product_image)}}" width="150px" height="150px" style="border-radius: 8px"></td>
+                                <tr id="myProduct_{{$value->basket_id}}">
+                                    <td>{{$value->count}}</td>
+                                    <td>{{$value->product_name}}</td>
+                                    <td>{{$value->product_price}}</td>
+                                    <td><img src="{{URL::asset('products_images/'.$value->product_image)}}" width="150px" height="150px" style="border-radius: 8px"></td>
                                             <td class="myactions">
-                                                <button type="button" class="btn btn-success buymyproduct" id="{{$item1->product_id}}" value="{{$key}}">Buy</button> |
-                                                <a class="btn btn-primary" href="{{url('/'.$language.'/deletebasket/'.$item1->product_id)}}">Delete</a>
+                                                <button type="button" class="btn btn-success buymyproduct"  value="{{$value->basket_id}}">Buy</button> |
+                                                <a class="btn btn-primary" href="{{url('/'.$language.'/deletebasket/'.$value->basket_id)}}">Delete</a>
                                             </td>
                                 </tr>
-                            @endforeach
-                            @endforeach
                     @endforeach
                 @endif
                 </tbody>

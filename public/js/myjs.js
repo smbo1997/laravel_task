@@ -89,20 +89,41 @@ $(document).ready(function () {
     $(document).on('click','.buyproduct',function () {
         var productId = $(this).attr('id');
         var token = $("input[name=_token]").val();
-        $.ajax({
-            url:'/buyproduct',
-            type:'POST',
-            data:{productId:productId,_token:token},
-            success: function (data) {
-                var a = $('.mybasket').attr('count');
-                 var b =  ++a;
-                $('.mybasket').text(b);
-                $('.mybasket').attr('count',b);
+        $(".mycount").val('');
+        $(".mycount").attr('id');
+        $("#myModal").modal('show');
+        $(".mycount").attr('id',productId);
 
-             }
-        });
 
     });
+
+
+
+    $(document).on('click','.buybycount',function () {
+        var token = $("input[name=_token]").val();
+        var count =  $(".mycount").val();
+        var productId =  $(".mycount").attr('id');
+        if(count > 0 && count != ''){
+            $.ajax({
+                url:'/buyproduct',
+                type:'POST',
+                data:{productId:productId,_token:token,count:count},
+                success: function (data) {
+                    $("#myModal").modal('hide');
+                    var a = $('.mybasket').attr('count');
+                     var b =  eval(parseInt(a) + parseInt(count));
+                    $('.mybasket').text(b);
+                    $('.mybasket').attr('count',b);
+
+                 }
+            });
+        }
+
+
+    });
+
+
+
 
 
 

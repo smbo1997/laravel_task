@@ -37,6 +37,8 @@ Route::post('/getbaskets', 'UserController@getbasketsdata');
 Route::get('{locale}/deletebasket/{Productid}', 'UserController@deletebasket');
 Route::post('/buymyproduct', 'UserController@buymyproduct');
 Route::post('/buyall', 'UserController@buyall');
+Route::get('{locale}/mycard', 'UserController@mycard');
+Route::post('/addcard', 'UserController@addcard');
 
 
 
@@ -69,6 +71,7 @@ Route::post('/mynotification', 'StoreOwnerController@mynotification');
 Route::get('{locale}/makestoreworkers', 'StoreOwnerController@makestoreworkers');
 Route::post('/addstoreworkers', 'StoreOwnerController@addstoreworkers');
 Route::get('{locale}/deleteworker/{worker_id}', 'StoreOwnerController@deleteworker');
+Route::get('{locale}/bouthproducts', 'StoreOwnerController@bouthproducts');
 
 
 
