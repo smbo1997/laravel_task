@@ -60,13 +60,15 @@
                                 <li><a href="{{ url('/'.$language.'/updatedproductbyadmin') }}">Updated Product By Admin</a><i class="notification" style="float: right; margin-top: -34px;"></i></li>
                                 <li><a href="{{ url('/'.$language.'/store_owner') }}">Home</a></li>
                                 <li><a href="{{ url('/'.$language.'/addtypes') }}">Add</a></li>
-                                <li><a href="{{ url('/'.$language.'/products') }}">Add Products</a></li>
+                                    @if(Session::has('Admin') !== true)
+                                        <li><a href="{{ url('/'.$language.'/products') }}">Add Products</a></li>
+                                    @endif
                                 <li><a href="{{ url($language.'/seeproducts') }}">See Products</a></li>
                                 <li><a href="{{ url($language.'/makestoreworkers') }}">Make Store Workers</a></li>
+                                <li><a href="{{ url($language.'/bouthproducts') }}">Bought products</a></li>
                              @else
                                     <li><a href="{{ url($language.'/store_worker') }}">Home</a></li>
                                     <li><a href="{{ url($language.'/seeproductwithworkers') }}">Seeproducts</a></li>
-
                              @endif
                          @endcan
                             @can('is_admin',new \App\User())
@@ -114,10 +116,10 @@
         </nav>
 
         @yield('content')
+
     </div>
 
     <!-- Scripts -->
-
 
 </body>
 </html>

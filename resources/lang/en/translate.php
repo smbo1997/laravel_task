@@ -7,5 +7,6 @@ return [
     'service' => 'Service',
     'login'=>'Login',
     'my_basket'=>'My Basket',
+    'my_card'=>'My Card',
 
 ];
