@@ -1,34 +1,35 @@
 @extends('strorelayouts.storeapp')
 
 @section('storecontent')
+    <button type="button" onclick="myclick()">SEND</button>
     <div class="container">
         <br>
         <div id="myCarousel" class="carousel slide" data-ride="carousel">
             <!-- Indicators -->
             <ol class="carousel-indicators">
-                <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-                <li data-target="#myCarousel" data-slide-to="1"></li>
-                <li data-target="#myCarousel" data-slide-to="2"></li>
-                <li data-target="#myCarousel" data-slide-to="3"></li>
+                @if(!empty($selectshop))
+                    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                    @for($i=1;$i<=9;$i++)
+                        <li data-target="#myCarousel" data-slide-to="{{$i}}"></li>
+                       @endfor
+                @endif
             </ol>
 
             <!-- Wrapper for slides -->
             <div class="carousel-inner" role="listbox">
-                <div class="item active">
-                    <img src="{{URL::asset('images/img_chania.jpg')}}" alt="Chania" width="460" height="345">
-                </div>
 
-                <div class="item">
-                    <img src="{{URL::asset('images/img_chania2.jpg')}}" alt="Chania" width="460" height="345">
-                </div>
 
-                <div class="item">
-                    <img src="{{URL::asset('images/img_flower.jpg')}}" alt="Flower" width="460" height="345">
-                </div>
 
-                <div class="item">
-                    <img src="{{URL::asset('images/img_flower2.jpg')}}" alt="Flower" width="460" height="345">
-                </div>
+                @if(!empty($selectshop))
+                    <div class="item active">
+                        <img src="{{URL::asset('images/img_chania.jpg')}}" alt="Chania" width="300" height="300">
+                    </div>
+                    @foreach($selectshop as $key=>$value)
+                            <div class="item">
+                                <img src="{{URL::asset('post_images/'.$value->image)}}" alt="Chania" width="300" height="300">
+                            </div>
+                    @endforeach
+                @endif
             </div>
 
             <!-- Left and right controls -->
@@ -66,4 +67,20 @@
         </div>
     </div>
     <script src="{{URL::asset('js/myjs.js')}}"></script>
+    <script>
+        var conn = new WebSocket('ws://task.dev:8080');
+        conn.onopen =function (e) {
+           console.log('connected successfuly');
+        };
+
+        conn.onmessage =function (e) {
+            console.log('Got  '+e.data);
+        };
+
+        function myclick() {
+            var data = 'hello world';
+            conn.send(data);
+            console.log('Sended'+data);
+        }
+    </script>
 @endsection

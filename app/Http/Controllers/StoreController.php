@@ -32,6 +32,8 @@ class StoreController extends Controller
 
     public function index(){
         $select = Post::select('*')->paginate(8);
+        $selectshop =Post::select('*')->inRandomOrder()->limit(9)->get();
+        $this->data['selectshop']=$selectshop;
         $this->data['stores']=$select;
         return view('welcome')->with($this->data);
     }
