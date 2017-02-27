@@ -16,6 +16,11 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Session;
 use App\Basket;
 use Illuminate\Support\Facades\DB;
+use App\Bankcard;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Support\Facades\Validator;
+use Mail;
+use App\Payment;
 
 class UserController extends Controller
 {
@@ -24,6 +29,7 @@ class UserController extends Controller
     private  $language;
     public  function __construct(Request $request)
     {
+        $this->middleware('auth');
         $language = $request->segment(1);
         $this->data['language']=$language;
         App::setLocale($language);
@@ -37,88 +43,153 @@ class UserController extends Controller
             $current_action = $action[count($action) - 1];
             $this->data['current_action'] = $current_action;
         }
+
+
     }
     public function showcharts(Request $request){
         $userId = Auth::user()->id;
-        $get = Basket::select('*')
-            ->where('user_id',$userId)
-            ->where('status',0)
-            ->get();
-        $products = array();
-        $gotproducts = array();
-        if($get){
-            foreach ($get as $key=>$value){
-                $products[$value->product_id] = 0;
-            }
+        $gotproducts = Basket::select('*')
+                                ->where('baskets.user_id',$userId)
+                                ->where('baskets.status',0)
+                                ->leftJoin('products','products.product_id','=','baskets.product_id')
+                                ->get();
 
-            foreach ($get as $key=>$value){
-                $products[$value->product_id] = $products[$value->product_id] +1;
-            }
-            foreach ($products as $key=>$value){
-                $getproduct = Product::select('*')
-                        ->where('product_id',$key)
-                        ->get();
-                $gotproducts[$value] = array($getproduct);
-            }
            $this->data['gotproducts']=$gotproducts;
-        }
-
         return view('mycharts')->with($this->data);
     }
 
 
     public function buyproduct(Request $request){
         $userid = Auth::user()->id;
-        Basket::create([
-            'user_id'=>$userid,
-            'product_id'=>$request->productId,
-            'status'=>0
-            ]);
+        if($userid){
+            $getbasketsbyuserid = Basket::select('*')
+                     ->where('user_id',$userid)
+                     ->where('product_id',$request->productId)
+                     ->where('status',0)
+                    ->first();
+            if($getbasketsbyuserid == null){
+                Basket::create([
+                    'user_id'=>$userid,
+                    'product_id'=>$request->productId,
+                    'count'=>$request->count,
+                    'status'=>0
+                ]);
+            }
+            else{
+                Basket::where('user_id',$userid)
+                    ->where('product_id',$request->productId)
+                    ->where('status',0)
+                    ->update(['count'=>$getbasketsbyuserid->count+$request->count]);
+            }
+        }
+
     }
 
 
     public function getbasketsdata(Request $request){
         $userId = Auth::user()->id;
+        $myarray = array();
          $get = Basket::select('*')
                 ->where('user_id',$userId)
                 ->where('status',0)
                 ->get();
-         return response(['basketcount'=>count($get)]);
+
+         if(!empty($get)){
+             foreach($get as $key=>$value){
+                 array_push($myarray,"$value->count");
+             }
+             $getcount = array_sum($myarray);
+         }
+
+         return response(['basketcount'=>$getcount]);
     }
 
-    public function deletebasket($lang,$productid){
+    public function deletebasket($lang,$basketId){
         $userId = Auth::user()->id;
-        $delete = Basket::where(['user_id'=>$userId,'product_id'=>$productid,'status'=>0])
+        $delete = Basket::where('basket_id',$basketId)
                             ->delete();
         if($delete){
             return redirect()->back();
         }
     }
 
-    public function buymyproduct(Request $request){
+    public function buymyproduct(Request $request,Payment $payment){
+        $useremail = Auth::user()->email;
         $userId = Auth::user()->id;
-        $buy =  Basket::where('user_id',$userId)
-                ->where('product_id',$request->productid)
-                ->update(['status'=>1]);
+        $amount = $request->total;
+        $payment->addOrder($userId,$amount);
+
+        Mail::send('emails.send', ['subject'=>'Thank you for shops'],function ($message) use($useremail)
+        {
+            $message->from('smbtest97@gmail.com', 'Message');
+            $message->to($useremail);
+
+        });
+
+        $buy =  Basket::where('basket_id',$request->basketid)
+                            ->update(['status'=>1]);
 
         if ($buy){
             return response(['data'=>1]);
         }
     }
 
-    public function buyall(Request $request){
+    public function buyall(Request $request, Payment $payment){
         $data = $request->data;
-        $userId = Auth::user()->id;
         if(!empty($data)){
+            $useremail = Auth::user()->email;
+            Mail::send('emails.send', ['subject'=>'Thank you for shops'],function ($message) use($useremail)
+            {
+                $message->from('smbtest97@gmail.com', 'Message');
+                $message->to($useremail);
+
+            });
+
             foreach ($data as $key=>$value){
-                    Basket::where('user_id',$userId)
-                             ->where('product_id',$value)
-                             ->where('status',0)
-                            ->update(['status'=>1]);
+                Basket::where('basket_id',$value)
+                    ->where('status',0)
+                    ->update(['status'=>1]);
             }
 
             return response(['data'=>1]);
         }
 
+    }
+
+    public  function mycard(Request $request){
+
+        return view('mycard')->with($this->data);
+    }
+
+    public function addcard(Request $request){
+
+       Validator::make($request->all(), [
+            'cardno' => 'required|min:16|max:16',
+            'expmonth' => 'required|min:5|max:5',
+            'cvc' => 'required|min:3|max:4'
+        ])->validate();
+
+        $userId = Auth::user()->id;
+        $getcard = Bankcard::select('*')
+                               ->where('user_id',$userId)
+                                ->first();
+        if ($getcard == null){
+            $create =  Bankcard::create([
+                'user_id' => $userId,
+                'card_no' => $request->cardno,
+                'exp_month' =>  $request->expmonth,
+                'cvc' =>  $request->cvc
+            ]);
+        }
+       else{
+            Bankcard::where('user_id',$userId)
+                        ->update([
+                            'card_no' => $request->cardno,
+                            'exp_month' =>  $request->expmonth,
+                            'cvc' =>  $request->cvc
+                        ]);
+          }
+
+           return redirect()->back();
     }
 }

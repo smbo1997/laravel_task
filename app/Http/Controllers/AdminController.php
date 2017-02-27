@@ -77,6 +77,8 @@ class AdminController extends Controller
       public function LoginwithUserId(Request $request,$language,$userid){
           $adminId = Auth::user()->id;
            session()->put('Admin', $adminId);
+           $aaa = session()->get('Admin');
+
           $success = Auth::loginUsingId($userid);
           if ($success){
               return redirect('/'.$this->language.'/user_home');

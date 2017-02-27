@@ -25,7 +25,7 @@ class HomeController extends Controller
         $this->data['language']=$language;
         $this->language = $language;
         $this->middleware('auth');
-    }
+}
 
     /**
      * Show the application dashboard.
@@ -33,6 +33,7 @@ class HomeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
+
     {
         if(Gate::check('is_admin', new User()) == true){
             if (Auth::user()->store_id == 0){
