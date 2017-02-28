@@ -36,6 +36,7 @@
                 <li><a href="/{{$language}}/service">{{trans('translate.service')}}</a></li>
                 @can('is_user',new \App\User())
                     <li><a href="{{url($language.'/charts')}}"><span class="glyphicon glyphicon-shopping-cart" style="margin-right: 4px;"></span>{{trans('translate.my_basket')}}</a><i class="mybasket" count="0" style="float: right;  margin-top: -34px;"></i></li>
+                    <li><a href="{{url($language.'/chat')}}">Chat</a></li>
                 @endcan
             </ul>
             <ul class="nav navbar-nav" style="float: right;">

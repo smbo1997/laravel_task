@@ -66,6 +66,7 @@
                                 <li><a href="{{ url($language.'/seeproducts') }}">See Products</a></li>
                                 <li><a href="{{ url($language.'/makestoreworkers') }}">Make Store Workers</a></li>
                                 <li><a href="{{ url($language.'/bouthproducts') }}">Bought products</a></li>
+                                <li><a href="{{ url($language.'/store_chat') }}">Chat</a></li>
                              @else
                                     <li><a href="{{ url($language.'/store_worker') }}">Home</a></li>
                                     <li><a href="{{ url($language.'/seeproductwithworkers') }}">Seeproducts</a></li>

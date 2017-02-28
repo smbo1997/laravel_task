@@ -4,6 +4,8 @@ namespace App\OwnFolder\Sockets;
 
 use App\OwnFolder\Sockets\Base\BaseSocket;
 use Ratchet\ConnectionInterface;
+use Illuminate\Support\Facades\Auth;
+use App\Chat;
 
 
 class ChatSocket extends BaseSocket{
@@ -23,13 +25,28 @@ class ChatSocket extends BaseSocket{
 
     function onClose(ConnectionInterface $conn){
         echo "Close Connection ({$conn->resourceId})\n";
+        $this->clients->detach($conn);
     }
 
     function onMessage(ConnectionInterface $from, $msg){
         $num = count($this->clients)-1;
-           echo sprintf('Connection sending message'."\n",$from->resourceId,$msg,$num,$num == 1 ? '':'s');
-           echo $from->resourceId;
-           echo $num;
+            sprintf('Connection sending message'."\n",$from->resourceId,$msg,$num,$num == 1 ? '':'s');
+//           echo $from->resourceId;
+//           echo $num;
+//         foreach ($msg as $value){
+//             echo $value;
+//         }
+
+        //$msgg = json_encode($msgid);
+
+        $getmessage = json_decode($msg);
+           Chat::create([
+               'from_id'=>$getmessage->user_id,
+               'to_id'=>$getmessage->to_id,
+               'content'=>$getmessage->content,
+               'status'=>0
+
+           ]);
             foreach ($this->clients as $client){
                 if ($from !==$client){
                     $client->send($msg);
@@ -38,7 +55,6 @@ class ChatSocket extends BaseSocket{
     }
 
     function onError(ConnectionInterface $conn, \Exception $e){
-
         echo "Has Error {$e->getMessage()}\n";
         $conn->close();
     }

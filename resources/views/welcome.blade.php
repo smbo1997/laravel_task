@@ -1,7 +1,6 @@
 @extends('strorelayouts.storeapp')
 
 @section('storecontent')
-    <button type="button" onclick="myclick()">SEND</button>
     <div class="container">
         <br>
         <div id="myCarousel" class="carousel slide" data-ride="carousel">
@@ -67,20 +66,4 @@
         </div>
     </div>
     <script src="{{URL::asset('js/myjs.js')}}"></script>
-    <script>
-        var conn = new WebSocket('ws://task.dev:8080');
-        conn.onopen =function (e) {
-           console.log('connected successfuly');
-        };
-
-        conn.onmessage =function (e) {
-            console.log('Got  '+e.data);
-        };
-
-        function myclick() {
-            var data = 'hello world';
-            conn.send(data);
-            console.log('Sended'+data);
-        }
-    </script>
 @endsection

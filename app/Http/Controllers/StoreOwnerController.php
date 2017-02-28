@@ -249,4 +249,16 @@ class StoreOwnerController extends Controller
             $this->data['bouthproducts']=$get;
         return view('bouthproducts')->with($this->data);
     }
+
+
+    public function showStorechat(){
+
+        $getusers = User::select('*')
+                           ->where('status','user')
+                           ->where('store_id',NULL)
+                            ->get();
+
+        $this->data['getusers'] =$getusers;
+        return view('StoreChat')->with($this->data);
+    }
 }
