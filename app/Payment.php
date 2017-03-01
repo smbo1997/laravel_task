@@ -9,7 +9,6 @@
 namespace App;
 
 use Auth;
-use Illuminate\Support\Facades\Input;
 use Braintree_Transaction;
 use Braintree_Customer;
 use Braintree_WebhookNotification;

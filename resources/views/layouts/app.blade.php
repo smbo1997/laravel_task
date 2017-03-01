@@ -76,6 +76,7 @@
                                 <li><a href="{{ url('/'.$language.'/admin') }}">Admin</a></li>
                                 <li><a href="{{ url('/'.$language.'/seeproductswithAdmin') }}">See Products</a></li>
                                 <li><a href="{{ url('/'.$language.'/shops') }}">Shops</a></li>
+                                <li><a href="{{ url('/'.$language.'/messages') }}">Messages</a></li>
                             @endcan
                     </ul>
 
@@ -94,7 +95,7 @@
 
                                 <ul class="dropdown-menu" role="menu">
                                     <li>
-                                        <a href="{{ url($language.'/logout') }}"
+                                        <a class="logoutform" href="{{ url($language.'/logout') }}"
                                             onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                             Logout

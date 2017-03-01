@@ -12,7 +12,9 @@ $(document).ready(function () {
    //         });
    // })
 
-
+$('.logoutform').click(function () {
+    localStorage.clear();
+})
 
 
     $('#list').click(function(event){event.preventDefault();$('#products .item').addClass('list-group-item');});
@@ -47,7 +49,6 @@ $(document).ready(function () {
             }
         });
     });
-
 
     $('.getproduct').click(function () {
         var id = $(this).val();
@@ -206,5 +207,64 @@ $(document).ready(function () {
             }
         });
     });
+
+
+    $('.searchproducts').click(function () {
+        var product_type = $('select.typeselect option:selected').val();
+        var minprice = $('.minprice').val();
+        var maxprice = $('.maxprice').val();
+        var token = $("input[name=_token]").val();
+        var language = $('.myproducts').attr('lang');
+        $.ajax({
+            url:'/getproductsByprice',
+            type:'POST',
+            data:{_token:token,minprice:minprice,maxprice:maxprice,product_type:product_type},
+            success: function (data) {
+                var JsonData = $.parseJSON(data);
+                $('.myproducts').empty();
+                var html = '';
+                if(JsonData.productByPrice.length>0){
+                    $.each(JsonData.productByPrice,function (key,value) {
+                        html =  '<tr>'+
+                            '<td>'+value.product_name+'</td>'+
+                            '<td>'+value.product_content+'</td>'+
+                            '<td>'+value.product_price+'</td>'+
+                            '<td><img src="/products_images/'+value.product_image+'" width="60px" height="60px" style="border-radius: 8px"/></td>'+
+                            '<td><a href="/'+language+'/deleteproduct/'+value.product_id+'">Delete Product</a>'+
+                            '</tr>';
+                        $('.myproducts').append(html);
+                    })
+                }
+            }
+        });
+    });
+
+
+    $('.answer').click(function () {
+        var email = $(this).attr('email');
+        var chatid = $(this).attr('chatid');
+        $('.senduser').attr('id',email);
+        $('.senduser').attr('chatid',chatid);
+    });
+
+    $('.sendmessage').click(function () {
+        var message =   $('.senduser').val();
+        var email = $('.senduser').attr('id');
+        var chatid = $('.senduser').attr('chatid');
+        var token = $("input[name=_token]").val();
+        if(message !== ''){
+            $.ajax({
+                url:'/sendmessagetouser',
+                type:'POST',
+                data:{_token:token,message:message,email:email,chatid:chatid},
+                success: function (data) {
+                    $("#myModal").modal('hide');
+                }
+            });
+        }
+    });
+
+
+
 
 });

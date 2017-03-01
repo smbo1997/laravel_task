@@ -17,6 +17,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link href="{{URL::asset('fancybox/jquery.fancybox.css')}}" rel="stylesheet">
+    @can('is_user',new \App\User())
+        <link href="{{URL::asset('css/smallchat.css')}}" rel="stylesheet">
+    @endcan
     <!-- Scripts -->
     <script>
         window.Laravel = <?php echo json_encode([
@@ -53,7 +56,7 @@
 
                         <ul class="dropdown-menu" role="menu">
                             <li>
-                                <a href="{{ url($language.'/logout') }}"
+                                <a class="logoutform" href="{{ url($language.'/logout') }}"
                                    onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                     Logout
@@ -73,6 +76,10 @@
         </div>
     </nav>
     @yield('storecontent')
+
+    @can('is_user',new \App\User())
+        @include('smallchat.chat')
+    @endcan
 </div>
 <script src="{{URL::asset('fancybox/jquery.fancybox.js')}}"></script>
 <script src="{{URL::asset('fancybox/jquery.mousewheel-3.0.6.pack.js')}}"></script>
@@ -80,6 +87,7 @@
 <script src="{{URL::asset('js/myjs.js')}}"></script>
 @can('is_user',new \App\User())
     <script src="{{URL::asset('js/user.js')}}"></script>
+    <script src="{{URL::asset('js/smallchat.js')}}"></script>
 @endcan
 </body>
 </html>

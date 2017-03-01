@@ -33,7 +33,6 @@ class ChatController extends Controller
     }
 
     public function  showchat(){
-
         $getstores = User::select('users.id','users.email','posts.image','posts.name')
                 ->where('users.status','store')
                 ->where('users.store_id',NULL)

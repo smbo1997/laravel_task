@@ -21,6 +21,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Support\Facades\Validator;
 use Mail;
 use App\Payment;
+use App\Adminchat;
 
 class UserController extends Controller
 {
@@ -191,5 +192,20 @@ class UserController extends Controller
           }
 
            return redirect()->back();
+    }
+
+
+
+    public  function  sendmessageAdmin(Request $request){
+
+       $send = Adminchat::create([
+            'user_id'=>$request->userid,
+            'content'=>$request->messagecontent,
+            'status'=>0
+        ]);
+
+       if ($send){
+           return response(['data'=>true]);
+       }
     }
 }

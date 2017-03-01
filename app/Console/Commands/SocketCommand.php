@@ -52,6 +52,5 @@ class SocketCommand extends Command
 
         $server->run();
 
-
     }
 }

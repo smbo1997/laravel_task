@@ -31,6 +31,7 @@ $(document).ready(function () {
 
     $('.send-message').bind('keypress', function (e) {
         var content =  $('.send-message').val();
+
         if (e.keyCode == 13) {
             if(content !== ''){
                 var user_id = $('.send-message').attr('userid');

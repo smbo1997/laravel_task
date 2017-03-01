@@ -11,6 +11,8 @@ use File;
 use App\Post;
 use App\Updateproduct;
 use Illuminate\Support\Facades\Lang;
+use App\Adminchat;
+use Mail;
 
 class AdminController extends Controller
 {
@@ -187,5 +189,47 @@ class AdminController extends Controller
            }
         }
 
+    }
+
+
+    public  function messages(){
+        $getmessages = Adminchat::select('users.name','users.email','adminchats.chat_id','adminchats.user_id','adminchats.content','adminchats.created_at')
+                                    ->where('adminchats.status',0)
+                                   ->leftJoin('users','users.id','=','adminchats.user_id')
+                                    ->get();
+
+        $this->data['getmessages']=$getmessages;
+         return view('adminmessages')->with($this->data);
+    }
+
+    public function deletemessagebyadmin($local,$message_id){
+        $delete =  Adminchat::where('chat_id',$message_id)
+                                ->delete();
+        if ($delete){
+            return redirect()->back();
+        }
+    }
+
+    public function adminseenmessage($local,$message_id){
+        $update =  Adminchat::where('chat_id',$message_id)
+                            ->update(['status'=>1]);
+        if ($update){
+            return redirect()->back();
+        }
+    }
+
+
+    public  function  sendmessagetouser(Request $request){
+         Adminchat::where('chat_id',$request->chatid)
+            ->update(['status'=>1]);
+        $fromMail = Auth::user()->email;
+        $to_mail = $request->email;
+        $from_name = 'Store Admin';
+        $subject = $request->message;
+        $send = Mail::raw('Текст письма', function ($message) use($fromMail, $from_name, $to_mail, $subject) {
+            $message->from($fromMail, $from_name);
+            $message->to($to_mail)->subject($subject);
+        });
+            return redirect()->back();
     }
 }

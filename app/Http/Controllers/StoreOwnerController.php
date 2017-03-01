@@ -261,4 +261,16 @@ class StoreOwnerController extends Controller
         $this->data['getusers'] =$getusers;
         return view('StoreChat')->with($this->data);
     }
+
+
+    public function getproductsByprice(Request $request){
+
+        $selectproducts = Product::select('*')
+                                    ->where('type_id',$request->product_type)
+                                    ->where('product_price','>=',$request->minprice)
+                                    ->where('product_price','<=',$request->maxprice)
+                                    ->get();
+
+        return json_encode(['productByPrice'=>$selectproducts]);
+    }
 }
