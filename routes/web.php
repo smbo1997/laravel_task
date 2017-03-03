@@ -40,12 +40,14 @@ Route::post('/buyall', 'UserController@buyall');
 Route::get('{locale}/mycard', 'UserController@mycard');
 Route::post('/addcard', 'UserController@addcard');
 Route::post('/sendmessageAdmin', 'UserController@sendmessageAdmin');
+Route::post('/getstoremessages', 'UserController@getstoremessages');
 
 
 
 //Store
 Route::get('/nextpaginate/{id}', 'StoreController@nextpaginate');
-Route::get('/{locale}', 'StoreController@index');
+Route::get('/{locale}/', 'StoreController@index');
+Route::post('?page={page}', 'StoreController@index');
 Route::get('/{locale}/service', 'StoreController@service');
 Route::get('/{locale}/store/{id}', 'StoreController@getstoreById');
 Route::post('/getproductsbystore', 'StoreController@getproductsbystore');
@@ -102,9 +104,12 @@ Route::post('/updatedproductbyadmin', 'AdminController@updatedproductbyadmin');
 Route::get('{locale}/messages', 'AdminController@messages');
 Route::get('{locale}/deletemessagebyadmin/{message_id}', 'AdminController@deletemessagebyadmin');
 Route::get('{locale}/adminseenmessage/{message_id}', 'AdminController@adminseenmessage');
+Route::get('{locale}/Deleteshop/{shop_id}', 'AdminController@Deleteshop');
 Route::post('/sendmessagetouser', 'AdminController@sendmessagetouser');
 
 
 
 //Chat
 Route::get('{locale}/chat', 'ChatController@showchat');
+Route::post('/getmessagesbyadminsmall', 'ChatController@getmessagesbyadminsmall');
+

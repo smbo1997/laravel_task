@@ -1,6 +1,8 @@
 @extends('strorelayouts.storeapp')
 @section('storecontent')
     <div class="container">
+
+        @if(!$gotproducts->isEmpty())
         <div class="row" en="{{$language}}">
             <button class="btn btn-success buyall" style="margin-top: 25px">Buy All</button>
             <table class="table table-hover" style="margin-top: 90px">
@@ -14,7 +16,7 @@
                 </tr>
                 </thead>
                 <tbody class="clearetable">
-                @if(!empty($gotproducts))
+
                     @foreach($gotproducts as $key=>$value)
                                 <tr id="myProduct_{{$value->basket_id}}">
                                     <td class="count_{{$value->basket_id}}" id="{{$value->count}}">{{$value->count}}</td>
@@ -27,9 +29,12 @@
                                             </td>
                                 </tr>
                     @endforeach
-                @endif
+
                 </tbody>
             </table>
+            @else
+                <p style="color:red;font-size: 20px">Your basket is clean</p>
+            @endif
         </div>
     </div>
 @endsection

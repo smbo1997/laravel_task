@@ -25,6 +25,15 @@
     </style>
     <div class="container">
         <div class="row">
+            @if (count($errors) > 0)
+                <div class="alert alert-danger" style="width: 744px; margin-left: 212px;">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
                     <div class="panel-heading">Hi Admin!</div><br>
@@ -35,7 +44,7 @@
                             <label for="email" class="col-md-4 control-label">Store Owner Name</label>
 
                             <div class="col-md-6">
-                                <input id="email" type="text" class="form-control" name="storeownername" required>
+                                <input id="email" type="text" class="form-control" name="storeownername" >
                             </div>
                         </div>
 
@@ -43,7 +52,7 @@
                             <label for="email" class="col-md-4 control-label">E-Mail Address</label>
 
                             <div class="col-md-6">
-                                <input id="email" type="email" class="form-control" name="email" required>
+                                <input id="email" type="text" class="form-control" name="email" >
                             </div>
                         </div>
 
@@ -51,21 +60,21 @@
                             <label for="email" class="col-md-4 control-label">Password</label>
 
                             <div class="col-md-6">
-                                <input id="email" type="password" class="form-control" name="password" required>
+                                <input id="email" type="password" class="form-control" name="password" >
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="email" class="col-md-4 control-label">About Store</label>
 
                             <div class="col-md-6">
-                                <input id="email" type="text" class="form-control" name="about" required>
+                                <input id="email" type="text" class="form-control" name="about" >
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="name" class="col-md-4 control-label">Store Name</label>
 
                             <div class="col-md-6">
-                                <input id="name" type="text" class="form-control" name="name"  required autofocus>
+                                <input id="name" type="text" class="form-control" name="name" >
                             </div>
                             <div class="col-md-6"><br>
                                 <span class="btn btn-default btn-file" style="margin-left: 259px;">

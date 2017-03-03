@@ -16,9 +16,9 @@ class ChatTableMigration extends Migration
         Schema::create('chats', function (Blueprint $table) {
             $table->increments('chat_id');
             $table->integer('from_id');
-            $table->integer('to_id');
+            $table->integer('to_id')->unsigned();
 //            $table->foreign('from_id')->references('id')->on('users');
-//            $table->foreign('to_id')->references('id')->on('users');
+           $table->foreign('to_id')->references('id')->on('users');
             $table->string('content');
             $table->integer('status');
             $table->timestamps();

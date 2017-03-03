@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Chat;
 use App\Updateproduct;
 use Illuminate\Http\Request;
 use App\Post;
@@ -11,17 +12,33 @@ use File;
 use Illuminate\Support\Facades\Input;
 use App\Producttype;
 use App\Product;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\App;
+use Image;
 
 class StoreOwnerController extends Controller
 {
     private  $data = array();
     private  $language;
-    public function __construct(Request $request)
+    public  function __construct(Request $request)
     {
         $this->middleware('auth');
         $language = $request->segment(1);
-        $this->language = $language;
         $this->data['language']=$language;
+        App::setLocale($language);
+        $path= $request->path();
+        if ($path == 'en' || $path == 'ru' || $path == 'am') {
+
+            $this->data['current_action'] = '';
+        }
+        else{
+            $action = explode("/", $path);
+            $current_action = $action[count($action) - 1];
+            $this->data['current_action'] = $current_action;
+        }
+
+
     }
 
     public function  showblade(){
@@ -34,8 +51,14 @@ class StoreOwnerController extends Controller
     }
 
     public function updatedata(Request $request){
-        $userid = Auth::user()->id;
 
+       $validation = Validator::make($request->all(), [
+            'name' => 'required|max:16',
+           'email' => 'required|email|max:255|unique:users',
+            'password' => 'required|min:6|max:16'
+        ])->validate();
+
+        $userid = Auth::user()->id;
         $updateData = User::where('id',$userid)
                             ->update(
                                 [
@@ -51,27 +74,31 @@ class StoreOwnerController extends Controller
     }
 
     public  function changedata(Request $request){
-        $file =$request->file('fileinput');
-        if (empty($file)) {
 
-            return redirect()->back();
-        }
-        else{
+        Validator::make($request->all(), [
+            'name' => 'required|max:16',
+            'about' => 'required|max:16',
+            'fileinput' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:1024'
+        ])->validate();
+
+
+        $file =$request->file('fileinput');
             $userId = Auth::user()->id;
             $Folder = public_path() . '/post_images';
-            $image=time() . '.' .$file->getClientOriginalExtension();
             if (!File::exists($Folder) && !File::isDirectory($Folder)) {
                 File::makeDirectory($Folder, 0777, true);
             }
-            $file->move($Folder,$image);
+
+            $image=time() . '.' .$file->getClientOriginalExtension();
+            $path = public_path('post_images/'.$image);
+            Image::make($file)->resize(400,300)->save($path);
             Post::where('user_id', $userId)
                 ->update([
                     'name' => $request->name,
                     'image' => $image,
                     'about' => $request->about
                 ]);
-        }
-        return redirect()->back();
+            return redirect()->back();
     }
 
 
@@ -112,12 +139,26 @@ class StoreOwnerController extends Controller
     }
 
     public  function addnewproduct(Request $request){
-        $file =$request->file('fileinput');
-        if (empty($file)) {
 
-            return redirect()->back();
+        Validator::make($request->all(), [
+            'productname' => 'required|max:16',
+            'productcontent' => 'required|max:16',
+            'productprice' => 'required|numeric|max:255',
+            'fileinput' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:1024'
+        ])->validate();
+
+
+        $file =$request->file('fileinput');
+        $userId = Auth::user()->id;
+        $Folder = public_path() . '/post_images';
+        if (!File::exists($Folder) && !File::isDirectory($Folder)) {
+            File::makeDirectory($Folder, 0777, true);
         }
-        else{
+
+        $image=time() . '.' .$file->getClientOriginalExtension();
+        $path = public_path('post_images/'.$image);
+        Image::make($file)->resize(400,300)->save($path);
+
             $userId = Auth::user()->id;
             $Folder = public_path() . '/products_images';
             $image=time() . '.' .$file->getClientOriginalExtension();
@@ -133,7 +174,7 @@ class StoreOwnerController extends Controller
                 'product_price'=>$request->productprice,
                 'product_image'=>$image
                 ]);
-        }
+
         return redirect()->back();
     }
 
@@ -220,6 +261,12 @@ class StoreOwnerController extends Controller
     }
 
     public function addstoreworkers(Request $request){
+        $validation = Validator::make($request->all(), [
+            'name' => 'required|max:16',
+            'email' => 'required|email|max:255|unique:users',
+            'password' => 'required|min:6|max:16',
+        ])->validate();
+
         $storeowner_id = Auth::user()->id;
         User::create([
             'name'=>$request->name,
@@ -252,19 +299,18 @@ class StoreOwnerController extends Controller
 
 
     public function showStorechat(){
-
-        $getusers = User::select('*')
-                           ->where('status','user')
-                           ->where('store_id',NULL)
+        $storeid = Auth::user()->id;
+        $getusers = Chat::distinct()
+                            ->select('chats.from_id','users.name','users.email')
+                            ->where('to_id', '=', $storeid)
+                            ->leftJoin('users','users.id','=','chats.from_id')
                             ->get();
-
         $this->data['getusers'] =$getusers;
         return view('StoreChat')->with($this->data);
     }
 
 
     public function getproductsByprice(Request $request){
-
         $selectproducts = Product::select('*')
                                     ->where('type_id',$request->product_type)
                                     ->where('product_price','>=',$request->minprice)

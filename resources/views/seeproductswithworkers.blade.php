@@ -15,6 +15,7 @@
                 </div>
             </div>
 
+            @if(!$selectproducts->isEmpty())
             <table class="table table-striped" style="margin-top: 125px">
                 <thead>
                 <tr>
@@ -26,7 +27,6 @@
                 </tr>
                 </thead>
                 <tbody class="myproducts1" lang="{{$language}}">
-                @if(!empty($selectproducts))
                     @foreach($selectproducts as $key=>$value)
                         <tr>
                             <td>{{$value->product_name}}</td>
@@ -40,8 +40,9 @@
                             </td>
                         </tr>
                     @endforeach
-                @endif
+
                 </tbody>
+                @endif
             </table>
         </div>
     </div>

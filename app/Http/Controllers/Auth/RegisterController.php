@@ -39,7 +39,7 @@ class RegisterController extends Controller
         return view('auth.register')->with($this->data);
     }
 
-    protected function validator(array $data)
+    protected function valiydator(array $data)
     {
         return Validator::make($data, [
             'name' => 'required|max:255',

@@ -12,10 +12,11 @@ use Illuminate\Support\Facades\Auth;
 class StoreController extends Controller
 {
     private $data = array();
-
+    private $language;
     public  function __construct(Request $request)
     {
         $language = $request->segment(1);
+        $this->language =$language;
         $this->data['language']=$language;
         App::setLocale($language);
         $path= $request->path();
@@ -30,19 +31,19 @@ class StoreController extends Controller
         }
     }
 
-    public function index(){
+    public function index(Request $request){
         $select = Post::select('*')->paginate(8);
-        $selectshop =Post::select('*')->inRandomOrder()->limit(9)->get();
-        $this->data['selectshop']=$selectshop;
-        $this->data['stores']=$select;
-        return view('welcome')->with($this->data);
+        if($request->ajax()){
+            return json_encode(['paginate'=>$select]);
+        }else{
+            $selectshop =Post::select('*')->inRandomOrder()->limit(9)->get();
+            $this->data['selectshop']=$selectshop;
+            $this->data['stores']=$select;
+            return view('welcome')->with($this->data);
+        }
+
     }
 
-    public function nextpaginate(){
-        $select = Post::select('*')->paginate(8);
-        $this->data['stores']=$select;
-        return view('paginate')->with($this->data);
-    }
 
     public function service(){
         $select = Post::select('*')->get();

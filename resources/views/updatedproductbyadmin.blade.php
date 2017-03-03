@@ -2,7 +2,7 @@
 @section('content')
     <div class="container">
         <div class="row">
-            @if(!empty($selectupdatedproducts))
+            @if(!$selectupdatedproducts->isEmpty())
                 @foreach($selectupdatedproducts as $key=>$value)
             <div class="item  col-xs-4 col-lg-4" id="product_{{$value->update_id}}">
                 <div class="thumbnail">
@@ -19,7 +19,9 @@
                     </div>
                 </div>
             </div>
-       @endforeach
+             @endforeach
+                @else
+                    <p style="color: red;font-size: 20px">You havn't updated products By Admin</p>
             @endif
         </div>
     </div>

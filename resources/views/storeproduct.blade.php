@@ -23,6 +23,15 @@
     </style>
     <div class="container">
         <div class="row">
+            @if (count($errors) > 0)
+                <div class="alert alert-danger" style="width: 744px; margin-left: -33px;">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <div class="col-md-8 col-md-offset-2" style="float: left; margin-left: -52px;">
                 <div class="panel panel-default">
                     <div class="panel-heading">Add Product</div><br>
@@ -44,21 +53,21 @@
                         <div class="form-group">
                             <label for="email" class="col-md-4 control-label">Product Name</label>
                             <div class="col-md-6">
-                                <input id="email" type="text" class="form-control" name="productname" required>
+                                <input id="email" type="text" class="form-control" name="productname" >
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="email" class="col-md-4 control-label">Product Content</label>
                             <div class="col-md-6">
-                                <input id="email" type="text" class="form-control" name="productcontent" required>
+                                <input id="email" type="text" class="form-control" name="productcontent" >
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="email" class="col-md-4 control-label">Product Price</label>
                             <div class="col-md-6">
-                                <input id="text" type="text" class="form-control" name="productprice" required>
+                                <input id="text" type="text" class="form-control" name="productprice" >
                             </div>
                         </div>
 

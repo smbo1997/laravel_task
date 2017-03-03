@@ -4,6 +4,12 @@
     <div class="container">
     <div class="raw">
 
+
+        @if($getmessages->isEmpty())
+          <div>
+              <p style="color:red; font-size: 20px">You havn't Messages</p>
+          </div>
+        @else
         <table class="table table-hover" style="margin-top: 60px">
             <thead>
             <tr>
@@ -16,7 +22,6 @@
             </thead>
             <tbody>
 
-            @if(!empty($getmessages))
                 @foreach($getmessages as $key=>$value)
                         <tr>
                             <td>{{$value->name}}</td>
@@ -26,13 +31,14 @@
                             <td>
                                 <a class="btn btn-primary" href="{{URL::asset($language.'/adminseenmessage/'.$value->chat_id)}}">Seen</a> |
                                 <a href="{{URL::asset($language.'/deletemessagebyadmin/'.$value->chat_id)}}" class="btn btn-warning">Delete Message</a> |
-                                <button type="button" class="btn btn-success answer" email="{{$value->email}}" chatid="{{$value->chat_id}}" data-toggle="modal" data-target="#myModal">Answer</button>
+                                <button type="button" class="btn btn-success answer" email="{{$value->email}}" chatid="{{$value->chat_id}}" userid="{{$value->user_id}}" data-toggle="modal" data-target="#myModal">Answer</button>
                             </td>
                         </tr>
                     @endforeach
-               @endif
+
             </tbody>
         </table>
+        @endif
     </div>
     </div>
 
@@ -53,7 +59,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary sendmessage">Send</button>
+                    <button type="button" class="btn btn-primary sendmessagebyadmin">Send</button>
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>

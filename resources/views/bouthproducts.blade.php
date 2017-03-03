@@ -2,6 +2,7 @@
 @section('content')
     <div class="container">
     <div class="row">
+        @if(!$bouthproducts->isEmpty())
         <table id="mydatatable"  class="display table table-striped table-bordered table-hover" cellspacing="0"  width="100%">
         <thead>
         <tr>
@@ -22,7 +23,6 @@
                 </tr>
             </tfoot>
         <tbody>
-        @if(!empty($bouthproducts))
             @foreach($bouthproducts as $key=>$value)
                 <tr>
                     <td>{{$value->name}}</td>
@@ -32,12 +32,16 @@
                     <td><img src="{{URL::asset('/products_images/'.$value->product_image)}}" style="border-radius: 8px" width="150px" height="150px"></td>
                 </tr>
             @endforeach
-        @endif
         </tbody>
     </table>
+            @else
+            <p style="color: red; font-size: 20px">You havn't bought products</p>
+        @endif
     </div>
     </div>
+    @if(!$bouthproducts->isEmpty())
     <script>
         $('#mydatatable').DataTable();
     </script>
+    @endif
 @endsection

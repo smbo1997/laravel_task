@@ -21,11 +21,11 @@
 
                 @if(!empty($selectshop))
                     <div class="item active">
-                        <img src="{{URL::asset('images/img_chania.jpg')}}" alt="Chania" width="300" height="300">
+                        <img src="{{URL::asset('images/img_chania.jpg')}}" alt="Chania" width="400" height="300">
                     </div>
                     @foreach($selectshop as $key=>$value)
                             <div class="item">
-                                <img src="{{URL::asset('post_images/'.$value->image)}}" alt="Chania" width="300" height="300">
+                                <img src="{{URL::asset('post_images/'.$value->image)}}" alt="Chania" width="400" height="300">
                             </div>
                     @endforeach
                 @endif
@@ -44,8 +44,8 @@
 
         <div class="content">
             <div style="margin: 0 auto; color: #01A4E0; font-size: 20px">Stores</div>
-            <div class="mypaginate">
-            <ul>
+            <div class="mypaginate" lang="{{$language}}">
+            <ul class="addpaginate">
                @if(!empty($stores))
                    @foreach($stores as $key=>$value)
                         <a href="{{url($language.'/store/'.$value->post_id)}}">
@@ -65,5 +65,4 @@
         </div>
         </div>
     </div>
-    <script src="{{URL::asset('js/myjs.js')}}"></script>
 @endsection

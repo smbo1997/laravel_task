@@ -28,7 +28,7 @@ class User extends Authenticatable
     ];
 
 
-    public function getposts(){
-        return $this->hasOne('App\Post');
+    public function getmessages(){
+        return $this->hasOne('App\Chat','to_id','id');
     }
 }

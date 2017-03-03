@@ -19,6 +19,8 @@
                 </div>
             </form>
 
+
+            @if(!$selectTypes->isEmpty())
             <table class="table table-striped" style="width:600px;">
                 <thead>
                 <tr>
@@ -27,19 +29,15 @@
                 </tr>
                 </thead>
                 <tbody>
-
-                    @if(!empty($selectTypes))
                         @foreach($selectTypes as $key=>$value)
                             <tr>
                             <td>{{$value->typename}}</td>
                             <td><a href="{{url('/'.$language.'/deletetype/'.$value->type_id)}}">Delete</a></td>
                             </tr>
                         @endforeach
-                    @endif
-
                 </tbody>
             </table>
-        </div>
+            @endif
         </div>
     </div>
 @endsection

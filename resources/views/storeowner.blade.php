@@ -34,29 +34,40 @@
                 @endif
             </div>
 
+            @if (count($errors) > 0)
+                <div class="alert alert-danger" style="width: 746px; float: right;margin-right: 43px;">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+
             <div class="col-md-8 col-md-offset-2" style="float: right;margin: 25px;">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Update my data</div>
+                    <div class="panel-heading">Update my data</div><br><br>
                     <form class="form-horizontal" role="form" method="POST"  action="{{ url('/updatedata') }}">
                         {{ csrf_field() }}
                         <div class="form-group">
                             <label for="email" class="col-md-4 control-label">Name</label>
                             <div class="col-md-6">
-                                <input id="email" type="text" class="form-control" name="name" required>
+                                <input id="email" type="text" class="form-control" name="name">
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="email" class="col-md-4 control-label">email</label>
                             <div class="col-md-6">
-                                <input id="email" type="email" class="form-control" name="email" required>
+                                <input id="email" type="text" class="form-control" name="email">
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label for="email" class="col-md-4 control-label">password</label>
                             <div class="col-md-6">
-                                <input id="email" type="password" class="form-control" name="password" required>
+                                <input id="email" type="password" class="form-control" name="password">
                             </div>
                         </div>
 
@@ -88,12 +99,12 @@
                             <label for="name" class="col-md-4 control-label">Store Name</label>
 
                             <div class="col-md-6">
-                                <input id="name" type="text" class="form-control" name="name"  required autofocus>
+                                <input id="name" type="text" class="form-control" name="name"   autofocus>
                             </div><br><br>
 
                             <label for="name" class="col-md-4 control-label">About Store</label>
                             <div class="col-md-6">
-                                <input id="name" type="text" class="form-control" name="about"  required autofocus>
+                                <input id="name" type="text" class="form-control" name="about"   autofocus>
                             </div>
                             <div class="col-md-6"><br>
                                 <span class="btn btn-default btn-file" style="margin-left: 297px;">

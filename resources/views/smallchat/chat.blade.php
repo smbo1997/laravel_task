@@ -12,6 +12,7 @@
                     </div>
                 </div>
                 <div class="panel-body msg_container_base" style="display: none;" style="height: 200px">
+
                     <div class="row msg_container base_sent">
                         <div class="col-md-10 col-xs-10">
                             <div class="messages msg_sent">
@@ -24,6 +25,10 @@
                         <div class="col-md-2 col-xs-2 avatar">
                             <img src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg" class=" img-responsive ">
                         </div>
+                    </div>
+
+                    <div class="addcontent">
+
                     </div>
 
                 </div>

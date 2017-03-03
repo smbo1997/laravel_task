@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Chat;
 use App\User;
 use Illuminate\Support\Facades\App;
+use App\Adminchat;
 
 class ChatController extends Controller
 {
@@ -40,5 +41,19 @@ class ChatController extends Controller
                 ->get();
         $this->data['getstores'] = $getstores;
         return view('chat')->with($this->data);
+    }
+
+    public function getmessagesbyadminsmall(Request $request){
+        $userid = Auth::user()->id;
+        $selectmessage = Adminchat::select('*')
+                                    ->where('user_id','1')
+                                    ->where('admin_id',$userid)
+                                    ->where('status',0)
+                                    ->get();
+        Adminchat::where('user_id','1')
+                    ->where('admin_id',$userid)
+                    ->where('statos',0)
+                    ->update(['status'=>1]);
+         return response(['selectmessage'=>$selectmessage]);
     }
 }

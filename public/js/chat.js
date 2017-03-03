@@ -14,7 +14,6 @@ $(document).ready(function () {
             '</div>'+
             '</div>';
         $('#content_'+msg.user_id).append(html);
-        //console.log(msg);
     };
 
 
@@ -26,12 +25,40 @@ $(document).ready(function () {
        $('.msg-wrap').attr('to_username',to_name);
        $('.msg-wrap').empty();
        $('.send-message').removeAttr('disabled');
-
+        var token = $("input[name=_token]").val();
+       $.ajax({
+           url:'/getstoremessages',
+           type:'post',
+           data:{_token:token,userid:id},
+           success:function (data) {
+               if(data.messages.length>0){
+                   var html = '';
+                   $.each(data.messages,function (key,value) {
+                       if(value.from_id ==id){
+                           html +='<div class="media msg">'+
+                               '<div class="media-body">'+
+                               '<h5 class="media-heading" style="color: #00dd00;">'+value.name+'</h5>'+
+                               '<small class="col-lg-10">'+value.content+'</small>'+
+                               '</div>'+
+                               '</div>';
+                       }
+                       if(value.to_id == id){
+                           html +='<div class="media msg">'+
+                               '<div class="media-body">'+
+                               '<h5 class="media-heading">'+value.name+'</h5>'+
+                               '<small class="col-lg-10">'+value.content+'</small>'+
+                               '</div>'+
+                               '</div>';
+                       }
+                   });
+                   $('#content_'+id).append(html);
+               }
+           }
+       });
     });
 
     $('.send-message').bind('keypress', function (e) {
         var content =  $('.send-message').val();
-
         if (e.keyCode == 13) {
             if(content !== ''){
                 var user_id = $('.send-message').attr('userid');

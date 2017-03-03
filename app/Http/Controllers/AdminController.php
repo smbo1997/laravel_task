@@ -13,6 +13,10 @@ use App\Updateproduct;
 use Illuminate\Support\Facades\Lang;
 use App\Adminchat;
 use Mail;
+use Image;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\App;
 
 class AdminController extends Controller
 {
@@ -20,12 +24,24 @@ class AdminController extends Controller
     private $data = array();
     private $language;
 
-    public function __construct(Request $request)
+    public  function __construct(Request $request)
     {
         $this->middleware('auth');
         $language = $request->segment(1);
-        $this->language=$language;
         $this->data['language']=$language;
+        App::setLocale($language);
+        $path= $request->path();
+        if ($path == 'en' || $path == 'ru' || $path == 'am') {
+
+            $this->data['current_action'] = '';
+        }
+        else{
+            $action = explode("/", $path);
+            $current_action = $action[count($action) - 1];
+            $this->data['current_action'] = $current_action;
+        }
+
+
     }
 
     public function  showblade(){
@@ -33,13 +49,20 @@ class AdminController extends Controller
     }
 
 
-    public function addimage(Request $request)
-    {
+    public function addimage(Request $request){
+
+
+        $validator= Validator::make($request->all(), [
+            'storeownername' => 'required|',
+            'email' => 'required|email|max:255|unique:users',
+            'password' => 'required|min:6|max:25',
+            'about' => 'required|',
+            'name' => 'required|',
+            'fileinput' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:1024'
+        ])->validate();
+
+
         $file =$request->file('fileinput');
-        if (empty($file)) {
-            return redirect()->back();
-        }
-        else{
             $addStore=User::create(
                 [
                     'name'=>$request->storeownername,
@@ -49,19 +72,21 @@ class AdminController extends Controller
                 ]
             );
             $getStoreId = $addStore->id;
-            $Folder = public_path() . '/post_images';
-            $image=time() . '.' .$file->getClientOriginalExtension();
+            $Folder = public_path() . 'post_images';
             if (!File::exists($Folder) && !File::isDirectory($Folder)) {
                 File::makeDirectory($Folder, 0777, true);
             }
-            $file->move($Folder,$image);
+            $image=time() . '.' .$file->getClientOriginalExtension();
+            $path = public_path('post_images/'.$image);
+            Image::make($file)->resize(400,300)->save($path);
+
             Post::create([
                 'user_id' => $getStoreId,
                 'name' => $request->name,
                 'image' => $image,
                 'about' => "$request->about"
             ]);
-        }
+
         return redirect()->back();
     }
 
@@ -70,6 +95,7 @@ class AdminController extends Controller
           $adminId = Auth::user()->id;
           $getshops = User::select('users.id','users.name','users.email','posts.name as posts_name','posts.image')
                                ->where('status','store')
+                               ->where('store_id',NULL)
                                 ->leftJoin('posts','posts.user_id','=','users.id')
                                 ->get();
           $this->data['getshops']=$getshops;
@@ -193,8 +219,10 @@ class AdminController extends Controller
 
 
     public  function messages(){
+         $myid = Auth::user()->id;
         $getmessages = Adminchat::select('users.name','users.email','adminchats.chat_id','adminchats.user_id','adminchats.content','adminchats.created_at')
                                     ->where('adminchats.status',0)
+                                    ->where('adminchats.user_id','<>',$myid)
                                    ->leftJoin('users','users.id','=','adminchats.user_id')
                                     ->get();
 
@@ -220,8 +248,15 @@ class AdminController extends Controller
 
 
     public  function  sendmessagetouser(Request $request){
+        $myid = Auth::user()->id;
          Adminchat::where('chat_id',$request->chatid)
             ->update(['status'=>1]);
+         Adminchat::create([
+                            'user_id'=>$myid,
+                            'admin_id'=>$request->userid,
+                            'content'=>$request->message,
+                            'status'=>0,
+                        ]);
         $fromMail = Auth::user()->email;
         $to_mail = $request->email;
         $from_name = 'Store Admin';
@@ -232,4 +267,6 @@ class AdminController extends Controller
         });
             return redirect()->back();
     }
+
+
 }

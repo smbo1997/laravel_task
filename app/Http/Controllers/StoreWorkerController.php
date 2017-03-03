@@ -11,17 +11,33 @@ use File;
 use Illuminate\Support\Facades\Input;
 use App\Producttype;
 use App\Product;
+use Illuminate\Support\Facades\App;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Support\Facades\Validator;
+use Image;
 
 class StoreWorkerController extends Controller
 {
     private  $data = array();
     private  $language;
-    public function __construct(Request $request)
+    public  function __construct(Request $request)
     {
         $this->middleware('auth');
         $language = $request->segment(1);
-        $this->language = $language;
         $this->data['language']=$language;
+        App::setLocale($language);
+        $path= $request->path();
+        if ($path == 'en' || $path == 'ru' || $path == 'am') {
+
+            $this->data['current_action'] = '';
+        }
+        else{
+            $action = explode("/", $path);
+            $current_action = $action[count($action) - 1];
+            $this->data['current_action'] = $current_action;
+        }
+
+
     }
 
     public function showstoreworker(){
@@ -35,19 +51,23 @@ class StoreWorkerController extends Controller
 
 
     public function addnewproductwithworkers(Request $request){
-        $file =$request->file('fileinput');
-        if (empty($file)) {
 
-            return redirect()->back();
-        }
-        else{
+        $validation = Validator::make($request->all(), [
+            'productname' => 'required|max:16',
+            'productcontent' => 'required|max:16',
+            'productprice' => 'required|numeric|max:255',
+            'fileinput' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:1024'
+        ])->validate();
+
+            $file =$request->file('fileinput');
             $userId = Auth::user()->store_id;
             $Folder = public_path() . '/products_images';
-            $image=time() . '.' .$file->getClientOriginalExtension();
             if (!File::exists($Folder) && !File::isDirectory($Folder)) {
                 File::makeDirectory($Folder, 0777, true);
             }
-            $file->move($Folder,$image);
+            $image=time() . '.' .$file->getClientOriginalExtension();
+            $path = public_path('products_images/'.$image);
+            Image::make($file)->resize(400,300)->save($path);
             Product::create([
                 'type_id'=>$request->producttype,
                 'user_id'=>$userId,
@@ -56,7 +76,7 @@ class StoreWorkerController extends Controller
                 'product_price'=>$request->productprice,
                 'product_image'=>$image
             ]);
-        }
+
         return redirect()->back();
     }
 
@@ -110,32 +130,44 @@ class StoreWorkerController extends Controller
 
     public function updatedproductwithworkers(Request $request){
         $file =$request->file('fileinput');
-
         if (empty($file)) {
+
+            $validation = Validator::make($request->all(), [
+                'productname' => 'required|max:16',
+                'productcontent' => 'required|max:16',
+                'productprice' => 'required|numeric|max:255',
+            ])->validate();
+
             $update = Product::where('product_id',$request->productid)
                 ->update([
                     'product_name'=>$request->productname,
                     'product_content'=>$request->productcontent,
                     'product_price'=>$request->productprice
                 ]);
-            if ($update){
                 return redirect()->back();
-            }
         }
         else{
+            $validation = Validator::make($request->all(), [
+                'productname' => 'required|max:16',
+                'productcontent' => 'required|max:16',
+                'productprice' => 'required|numeric|max:255',
+                'fileinput' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:10240'
+            ])->validate();
+
             $Folder = public_path() . '/products_images';
-            $image=time() . '.' .$file->getClientOriginalExtension();
             if (!File::exists($Folder) && !File::isDirectory($Folder)) {
                 File::makeDirectory($Folder, 0777, true);
             }
-            $file->move($Folder,$image);
+            $image=time() . '.' .$file->getClientOriginalExtension();
+            $path = public_path('products_images/'.$image);
+            Image::make($file)->resize(400,300)->save($path);
             $updated = Product::where('product_id',$request->productid)
-                ->update([
-                    'product_name'=>$request->productname,
-                    'product_content'=>$request->productcontent,
-                    'product_price'=>$request->productprice,
-                    'product_image'=>$image
-                ]);
+                                ->update([
+                                    'product_name'=>$request->productname,
+                                    'product_content'=>$request->productcontent,
+                                    'product_price'=>$request->productprice,
+                                    'product_image'=>$image
+                                ]);
             if ($updated){
                 return redirect()->back();
             }

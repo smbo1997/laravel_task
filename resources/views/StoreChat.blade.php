@@ -10,7 +10,7 @@
             <div class="conversation-wrap col-lg-3">
                 @if(!empty($getusers))
                     @foreach($getusers as $key=>$value)
-                        <div class="media conversation getstore" id="{{$value->id}}" toname="{{$value->name}}">
+                        <div class="media conversation getstore" id="{{$value->from_id}}" toname="{{$value->name}}">
                             <a class="pull-left" href="#">
                                 <img class="media-object"  style="width: 50px; height: 50px;" src="{{URL::asset('avatar/avatar.png')}}">
                             </a>
@@ -27,7 +27,6 @@
             <div class="message-wrap col-lg-8" >
                 <div class="msg-wrap" style="height: 300px;"  username="{{Auth::user()->name}}">
                     {{--<small class="pull-right time"><i class="fa fa-clock-o"></i> 12:10am</small>--}}
-
                 </div>
 
                 <div class="send-wrap ">

@@ -1,16 +1,37 @@
 $(document).ready(function () {
-   // $(document).on('click','.pagination a',function (e) {
-   //     e.preventDefault();
-   //     var page = $(this).attr('href').split('page=')[1];
-   //     $.ajax({
-   //         url:'nextpaginate/'+page,
-   //         type:'GET',
-   //         success: function (data) {
-   //              $(".mypaginate").html(data);
-   //              location.hash = page;
-   //         }
-   //         });
-   // })
+
+    // $(document).on('click','.pagination li',function (e) {
+    //     $('.pagination li').removeClass('active');
+    //     $(this).addClass('active');
+    // });
+   $(document).on('click','.pagination li a',function (e) {
+       e.preventDefault();
+       var page = $(this).attr('href').split('page=')[1];
+       var language = $('.mypaginate').attr('lang');
+       $('.pagination li').removeClass('active');
+       $(this).parent().addClass('active');
+       $.ajax({
+           url:'?page=' + page,
+           type:'get',
+           success: function (data) {
+               var JsonData = $.parseJSON(data);
+               if(JsonData.paginate.data){
+                   var html = '';
+                   $.each(JsonData.paginate.data,function (key,value) {
+                           html += '<a href="'+language+'/store/' + value.post_id + '">' +
+                               '<li class="licontents">' +
+                               '<div>' +
+                               '<img   src="/post_images/' + value.image + '" width="100px" height="100px" style="border-radius: 10px; float:left;">' +
+                               '<p style="color:#01A4E0 ; float: right">'+value.name+'</p>' +
+                               '</div>' +
+                               '</li>' +
+                               '</a>';
+                       $(".addpaginate").html(html);
+                   });
+               }
+           }
+           });
+   })
 
 $('.logoutform').click(function () {
     localStorage.clear();
@@ -243,21 +264,25 @@ $('.logoutform').click(function () {
     $('.answer').click(function () {
         var email = $(this).attr('email');
         var chatid = $(this).attr('chatid');
+        var userid = $(this).attr('userid');
         $('.senduser').attr('id',email);
         $('.senduser').attr('chatid',chatid);
+        $('.senduser').attr('userid',userid);
     });
 
-    $('.sendmessage').click(function () {
+    $('.sendmessagebyadmin').click(function () {
         var message =   $('.senduser').val();
         var email = $('.senduser').attr('id');
         var chatid = $('.senduser').attr('chatid');
+        var userid = $('.senduser').attr('userid');
         var token = $("input[name=_token]").val();
         if(message !== ''){
             $.ajax({
                 url:'/sendmessagetouser',
                 type:'POST',
-                data:{_token:token,message:message,email:email,chatid:chatid},
+                data:{_token:token,message:message,email:email,chatid:chatid,userid:userid},
                 success: function (data) {
+                    $('.senduser').val('');
                     $("#myModal").modal('hide');
                 }
             });

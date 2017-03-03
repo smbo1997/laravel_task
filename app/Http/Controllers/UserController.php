@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Chat;
 use App\Updateproduct;
 use Illuminate\Http\Request;
 use App\Post;
@@ -163,11 +164,10 @@ class UserController extends Controller
     }
 
     public function addcard(Request $request){
-
        Validator::make($request->all(), [
-            'cardno' => 'required|min:16|max:16',
-            'expmonth' => 'required|min:5|max:5',
-            'cvc' => 'required|min:3|max:4'
+            'cardno' => 'required|numeric|min:16|max:16',
+            'expmonth' => 'required|numeric|min:5|max:5',
+            'cvc' => 'required|numeric|min:3|max:4'
         ])->validate();
 
         $userId = Auth::user()->id;
@@ -200,6 +200,7 @@ class UserController extends Controller
 
        $send = Adminchat::create([
             'user_id'=>$request->userid,
+            'admin_id'=>'1',
             'content'=>$request->messagecontent,
             'status'=>0
         ]);
@@ -207,5 +208,21 @@ class UserController extends Controller
        if ($send){
            return response(['data'=>true]);
        }
+    }
+
+    public function  getstoremessages(Request $request){
+        $user_id = $request->userid;
+        $selectMessages = Chat::select('*')
+                        ->leftJoin('users', function ($join) use($user_id) {
+                            $join->on('chats.from_id', '=', 'users.id');
+                        })
+                ->where('chats.to_id','=',$user_id)
+                ->where('chats.from_id','=',Auth::id())
+                ->orWhere('chats.to_id','=',Auth::id())
+                ->where('chats.from_id', '=', $user_id)
+                ->orderBy('chats.created_at', 'asc')
+                ->get();
+
+        return response(['messages'=>$selectMessages]);
     }
 }

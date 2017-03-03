@@ -3,6 +3,7 @@
 @section('content')
     <div class="container">
         <div class="row">
+            @if(!empty($getshops))
                 <table id="mydatatable"  class="display table table-striped table-bordered table-hover" cellspacing="0"  width="100%">
                 <thead>
                 <tr>
@@ -24,7 +25,7 @@
                 </tfoot>
 
                 <tbody>
-                    @if(!empty($getshops))
+
                         @foreach($getshops as $key=>$value)
                             <tr>
                                 <td>{{$value->name}}</td>
@@ -37,13 +38,16 @@
 
                             </tr>
                         @endforeach
-                    @endif
+
                 </tbody>
                 </table>
+            @endif
         </div>
     </div>
+    @if(!empty($getshops))
     <script>
         $('#mydatatable').DataTable();
     </script>
+    @endif
 @endsection
 

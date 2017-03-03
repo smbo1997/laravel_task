@@ -8,4 +8,9 @@ class Chat extends Model
 {
     protected $table='chats';
     protected  $fillable = ['from_id','to_id','content','status'];
+
+
+    public  function messages(){
+        return $this->belongsTo('App\User','id','to_id');
+    }
 }
