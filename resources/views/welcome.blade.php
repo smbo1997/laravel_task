@@ -59,7 +59,7 @@
                     @endforeach
                 @endif
             </ul>
-            <div style="margin-left: 145px">
+            <div style="margin-left: 145px" class="addpagination">
                     {{ $stores->links() }}
             </div>
         </div>

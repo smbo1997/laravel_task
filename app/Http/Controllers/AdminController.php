@@ -105,20 +105,19 @@ class AdminController extends Controller
       public function LoginwithUserId(Request $request,$language,$userid){
           $adminId = Auth::user()->id;
            session()->put('Admin', $adminId);
-           $aaa = session()->get('Admin');
-
+            session()->get('Admin');
           $success = Auth::loginUsingId($userid);
           if ($success){
-              return redirect('/'.$this->language.'/user_home');
+              return redirect('/'.$language.'/user_home');
           }
       }
 
-      public function backadmin(Request $request){
+      public function backadmin(Request $request,$lang){
            $adminId =session()->get('Admin');
           session()->forget('Admin');
           $success = Auth::loginUsingId($adminId);
           if ($success){
-              return redirect('/'.$this->language.'/shops');
+              return redirect('/'.$lang.'/shops');
           }
       }
 
@@ -135,7 +134,7 @@ class AdminController extends Controller
                                 ->where('status','store')
                                  ->rightJoin('posts','users.id','=','posts.user_id')
                                  ->get();
-              $this->data['selectshop'] = $selectshop;
+                       $this->data['selectshop'] = $selectshop;
           return view('seeproductswithAdmin')->with($this->data);
       }
 
@@ -143,7 +142,6 @@ class AdminController extends Controller
      public function  gettypeswithadmin(Request $request){
 
           $products = Producttype::select('*')
-                                   ->where('user_id',$request->userid)
                                     ->get();
               return json_encode(['products'=>$products]);
      }
@@ -151,6 +149,7 @@ class AdminController extends Controller
      public function  getproductsbyadmin(Request $request){
           $products = Product::select('*')
                                    ->where('type_id',$request->typeid)
+                                   ->where('user_id',$request->shopid)
                                     ->get();
               return json_encode(['getproducts'=>$products]);
      }
@@ -186,6 +185,12 @@ class AdminController extends Controller
         }
 
         if (empty($file)) {
+
+            $validator= Validator::make($request->all(), [
+                'productname' => 'required|max:255',
+                'productcontent' => 'required|max:255',
+                'productprice' => 'required|numeric',
+            ])->validate();
             $update = Product::where('product_id',$request->productid)
                                 ->update([
                                         'product_name'=>$request->productname,
@@ -197,12 +202,20 @@ class AdminController extends Controller
                 }
         }
         else{
+            $validator= Validator::make($request->all(), [
+                'productname' => 'required|max:255',
+                'productcontent' => 'required|max:255',
+                'productprice' => 'required|numeric',
+                'fileinput' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:1024'
+            ])->validate();
+
             $Folder = public_path() . '/products_images';
-            $image=time() . '.' .$file->getClientOriginalExtension();
             if (!File::exists($Folder) && !File::isDirectory($Folder)) {
                 File::makeDirectory($Folder, 0777, true);
             }
-            $file->move($Folder,$image);
+            $image=time() . '.' .$file->getClientOriginalExtension();
+            $path = public_path('products_images/'.$image);
+            Image::make($file)->resize(400,300)->save($path);
             $updated = Product::where('product_id',$request->productid)
                       ->update([
                                 'product_name'=>$request->productname,
@@ -268,5 +281,26 @@ class AdminController extends Controller
             return redirect()->back();
     }
 
+    public  function addtypes(Request $request){
+        $userid = Auth::user()->id;
+        $selectTypes = Producttype::select('*')
+            ->where('user_id',$userid)
+            ->get();
+        $this->data['selectTypes']=$selectTypes;
+        return view('addtypes')->with($this->data);
+    }
+
+
+    public function addnewtype(Request $request){
+        $userid = Auth::user()->id;
+        Validator::make($request->all(), [
+            'typename' => 'required|max:255|nullable|unique:producttypes',
+        ])->validate();
+        $createtype = Producttype::create([
+                'user_id'=>$userid,
+                'typename'=>$request->addtype
+            ]);
+        return redirect()->back();
+    }
 
 }

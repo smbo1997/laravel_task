@@ -46,7 +46,7 @@ class StoreController extends Controller
 
 
     public function service(){
-        $select = Post::select('*')->get();
+        $select = Producttype::select('*')->get();
         $this->data['select'] = $select;
         return view('service')->with($this->data);
     }
@@ -56,9 +56,7 @@ class StoreController extends Controller
         $store = Post::select('*')
                         ->where('post_id',$id)
                         ->first();
-        $getTypes = User::select('*')
-                           ->where('users.id',$store->user_id)
-                           ->join('Producttypes', 'Producttypes.user_id','=','users.id' )
+        $getTypes = Producttype::select('*')
                            ->get();
         $this->data['aboutStore'] = $store;
         $this->data['getTypes'] = $getTypes;
@@ -69,8 +67,27 @@ class StoreController extends Controller
     public function getproductsbystore(Request $request){
                $get = Product::select('*')
                     ->where('type_id',$request->id)
+                    ->where('user_id',$request->storeid)
+                    ->get();
+        return json_encode(['getproducts'=>$get]);
+    }
+
+    public function getstoresbyservice(Request $request){
+        $getstores = Product::distinct()
+                            ->select('products.type_id','products.user_id','posts.user_id','posts.name','posts.image')
+                            ->where('products.type_id', '=', $request->typeid)
+                            ->leftJoin('posts','posts.user_id','=','products.user_id')
+                            ->get();
+        return response(['getstores'=>$getstores]);
+    }
+
+
+    public function  getproductbystoreandtypeid(Request $request){
+        $getproduct = Product::select('*')
+                   ->where('type_id',$request->typeid)
+                   ->where('user_id',$request->userid)
                     ->get();
 
-        return json_encode(['getproducts'=>$get]);
+        return json_encode(['getproduct'=>$getproduct]);
     }
 }

@@ -11,6 +11,7 @@
             <th>How many</th>
             <th>Bouth date</th>
             <th>Product image</th>
+            <th>Actions</th>
         </tr>
         </thead>
             <tfoot>
@@ -20,6 +21,7 @@
                     <th>How many</th>
                     <th>Bouth date</th>
                     <th>Product image</th>
+                    <th>Actions</th>
                 </tr>
             </tfoot>
         <tbody>
@@ -30,6 +32,9 @@
                     <td>{{$value->count}}</td>
                     <td>{{$value->created_at}}</td>
                     <td><img src="{{URL::asset('/products_images/'.$value->product_image)}}" style="border-radius: 8px" width="150px" height="150px"></td>
+                    <td>
+                        <a class="btn btn-danger" href="{{url('/'.$language.'/deleteboutproductbystore/'.$value->basket_id)}}">Delete</a>
+                    </td>
                 </tr>
             @endforeach
         </tbody>

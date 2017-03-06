@@ -98,23 +98,23 @@ setTimeout(smalchat, 3000);
         var userid = $('#chat_window_1').attr('user');
         var token = $("input[name=_token]").val();
 
-       var getmymessage = localStorage.getItem("message");
-       console.log(getmymessage);
-       if(getmymessage == null){
-           var data = [];
-           data.push(messagecontent);
-           localStorage.setItem("message",JSON.stringify(data));
-       }else{
-           var gotmessage = JSON.parse(getmymessage);
-           var newarray = [];
-           $.each(gotmessage, function (key,value) {
-               newarray.push(value);
-           });
-           newarray.push(messagecontent);
-           localStorage.setItem("message",JSON.stringify(newarray));
-       }
-        setTimeout(getmessagesByadmin,20000);
         if(messagecontent !== ''){
+            var getmymessage = localStorage.getItem("message");
+
+            if(getmymessage == null){
+                var data = [];
+                data.push(messagecontent);
+                localStorage.setItem("message",JSON.stringify(data));
+            }else{
+                var gotmessage = JSON.parse(getmymessage);
+                var newarray = [];
+                $.each(gotmessage, function (key,value) {
+                    newarray.push(value);
+                });
+                newarray.push(messagecontent);
+                localStorage.setItem("message",JSON.stringify(newarray));
+            }
+            setTimeout(getmessagesByadmin,20000);
             $.ajax({
                         url:'/sendmessageAdmin',
                         type:'post',
@@ -170,7 +170,7 @@ setTimeout(smalchat, 3000);
                     html += '<div class="row msg_container base_sent">'+
                         '<div class="col-md-10 col-xs-10">'+
                         '<div class="messages msg_sent">'+
-                        '<p>Admin is not online</p>'+
+                        '<p>Admin is not online sorry</p>'+
                         '</div>'+
                         '</div>'+
                         '<div class="col-md-2 col-xs-2 avatar">'+

@@ -59,7 +59,6 @@
                             @if(Auth::user()->store_id == null)
                                 <li><a href="{{ url('/'.$language.'/updatedproductbyadmin') }}">Updated Product By Admin</a><i class="notification" style="float: right; margin-top: -34px;"></i></li>
                                 <li><a href="{{ url('/'.$language.'/store_owner') }}">Home</a></li>
-                                <li><a href="{{ url('/'.$language.'/addtypes') }}">Add</a></li>
                                     @if(Session::has('Admin') !== true)
                                         <li><a href="{{ url('/'.$language.'/products') }}">Add Products</a></li>
                                     @endif
@@ -74,6 +73,7 @@
                          @endcan
                             @can('is_admin',new \App\User())
                                 <li><a href="{{ url('/'.$language.'/admin') }}">Admin</a></li>
+                                <li><a href="{{ url('/'.$language.'/addtypes') }}">Add</a></li>
                                 <li><a href="{{ url('/'.$language.'/seeproductswithAdmin') }}">See Products</a></li>
                                 <li><a href="{{ url('/'.$language.'/shops') }}">Shops</a></li>
                                 <li><a href="{{ url('/'.$language.'/messages') }}">Messages</a></li>

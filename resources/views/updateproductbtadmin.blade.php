@@ -25,6 +25,17 @@
     </style>
     <div class="container">
         <div class="row">
+            @if (count($errors) > 0)
+                <div class="col-md-8 col-md-offset-2">
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                </div>
+            @endif
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
                     <div class="panel-heading">Update Product!</div><br>
@@ -36,7 +47,7 @@
                             <label for="email" class="col-md-4 control-label ">Product Name</label>
 
                             <div class="col-md-6">
-                                <input id="email" type="text" class="form-control trname" name="productname" value="{{$product->product_name}}" required>
+                                <input id="email" type="text" class="form-control trname" name="productname" value="{{$product->product_name}}" >
                             </div>
                         </div>
 
@@ -44,7 +55,7 @@
                             <label for="email" class="col-md-4 control-label">Product Content</label>
 
                             <div class="col-md-6">
-                                <input id="email" type="text" class="form-control" name="productcontent" value="{{$product->product_content}}" required>
+                                <input id="email" type="text" class="form-control" name="productcontent" value="{{$product->product_content}}" >
                             </div>
                         </div>
 
@@ -52,7 +63,7 @@
                             <label for="email" class="col-md-4 control-label">Product Price IN USD</label>
 
                             <div class="col-md-6">
-                                <input id="email" type="text" class="form-control productprice" name="productprice" value="{{$product->product_price}}" required>
+                                <input id="email" type="text" class="form-control productprice" name="productprice" value="{{$product->product_price}}" >
                             </div>
                         </div>
 

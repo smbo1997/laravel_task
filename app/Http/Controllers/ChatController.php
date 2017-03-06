@@ -52,7 +52,7 @@ class ChatController extends Controller
                                     ->get();
         Adminchat::where('user_id','1')
                     ->where('admin_id',$userid)
-                    ->where('statos',0)
+                    ->where('status',0)
                     ->update(['status'=>1]);
          return response(['selectmessage'=>$selectmessage]);
     }

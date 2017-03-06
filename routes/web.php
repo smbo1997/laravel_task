@@ -51,6 +51,10 @@ Route::post('?page={page}', 'StoreController@index');
 Route::get('/{locale}/service', 'StoreController@service');
 Route::get('/{locale}/store/{id}', 'StoreController@getstoreById');
 Route::post('/getproductsbystore', 'StoreController@getproductsbystore');
+Route::post('/getstoresbyservice', 'StoreController@getstoresbyservice');
+Route::post('/getproductbystoreandtypeid', 'StoreController@getproductbystoreandtypeid');
+
+
 
 //user_home
 Route::get('{locale}/user_home', 'HomeController@index');
@@ -60,8 +64,6 @@ Route::get('{locale}/user_home', 'HomeController@index');
 Route::get('{locale}/store_owner', 'StoreOwnerController@showblade');
 Route::post('/updatedata', 'StoreOwnerController@updatedata');
 Route::post('/changedata', 'StoreOwnerController@changedata');
-Route::get('{locale}/addtypes', 'StoreOwnerController@addtypes');
-Route::post('addnewtype', 'StoreOwnerController@addnewtype');
 Route::get('/{locale}/deletetype/{type_id}', 'StoreOwnerController@deletetype');
 Route::get('/{locale}/products', 'StoreOwnerController@products');
 Route::post('/addnewproduct', 'StoreOwnerController@addnewproduct');
@@ -77,6 +79,7 @@ Route::get('{locale}/deleteworker/{worker_id}', 'StoreOwnerController@deletework
 Route::get('{locale}/bouthproducts', 'StoreOwnerController@bouthproducts');
 Route::get('{locale}/store_chat', 'StoreOwnerController@showStorechat');
 Route::post('/getproductsByprice', 'StoreOwnerController@getproductsByprice');
+Route::get('{locale}/deleteboutproductbystore/{basket_id}', 'StoreOwnerController@deleteboutproductbystore');
 
 
 
@@ -106,7 +109,8 @@ Route::get('{locale}/deletemessagebyadmin/{message_id}', 'AdminController@delete
 Route::get('{locale}/adminseenmessage/{message_id}', 'AdminController@adminseenmessage');
 Route::get('{locale}/Deleteshop/{shop_id}', 'AdminController@Deleteshop');
 Route::post('/sendmessagetouser', 'AdminController@sendmessagetouser');
-
+Route::get('{locale}/addtypes', 'AdminController@addtypes');
+Route::post('addnewtype', 'AdminController@addnewtype');
 
 
 //Chat

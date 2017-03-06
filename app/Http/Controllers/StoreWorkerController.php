@@ -43,7 +43,6 @@ class StoreWorkerController extends Controller
     public function showstoreworker(){
         $userId = Auth::user()->store_id;
         $getproductsTypes = Producttype::select('*')
-                                        ->where('user_id',$userId)
                                         ->get();
         $this->data['getproductsTypes']=$getproductsTypes;
         return view('storeworkers')->with($this->data);
@@ -84,10 +83,8 @@ class StoreWorkerController extends Controller
     public function seeproductwithworkers(){
         $userId = Auth::user()->store_id;
         $getproductsTypes = Producttype::select('*')
-            ->where('user_id',$userId)
             ->get();
         $productid = Producttype::select('*')
-            ->where('user_id',$userId)
             ->first();
         if ($productid !== null){
             $selectproducts = Product::select('*')

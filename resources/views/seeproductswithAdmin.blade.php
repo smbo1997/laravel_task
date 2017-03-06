@@ -20,8 +20,9 @@
             <div class="form-group">
                 <label for="email" class="col-md-4 control-label">Select Type</label>
                 <div class="col-md-6">
-                    <select class="form-control admintypeselect">
+                    <select class="form-control admintypeselect" disabled="disabled">
                         <option value="noselect"></option>
+
                     </select>
                 </div>
             </div><br><br>

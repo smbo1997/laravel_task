@@ -7,6 +7,7 @@ $(document).ready(function () {
    $(document).on('click','.pagination li a',function (e) {
        e.preventDefault();
        var page = $(this).attr('href').split('page=')[1];
+       var setpage = $(this).attr('href').split('=')[0];
        var language = $('.mypaginate').attr('lang');
        $('.pagination li').removeClass('active');
        $(this).parent().addClass('active');
@@ -15,9 +16,11 @@ $(document).ready(function () {
            type:'get',
            success: function (data) {
                var JsonData = $.parseJSON(data);
+               console.log(JsonData.paginate);
                if(JsonData.paginate.data){
                    var html = '';
                    $.each(JsonData.paginate.data,function (key,value) {
+
                            html += '<a href="'+language+'/store/' + value.post_id + '">' +
                                '<li class="licontents">' +
                                '<div>' +
@@ -27,7 +30,26 @@ $(document).ready(function () {
                                '</li>' +
                                '</a>';
                        $(".addpaginate").html(html);
+
                    });
+                   $('.pagination li:eq(1)').html('<a href="'+setpage+'=1">1</a>');
+                   if(JsonData.paginate.next_page_url !== null){
+                       $('.pagination li:last-child').removeClass('disabled');
+                       $('.pagination li:last-child').html('<a href="'+JsonData.paginate.next_page_url+'">'+'»'+'</a>');
+                   }else{
+                       $('.pagination li:last-child').html('<span>'+'»'+'</span>');
+                       $('.pagination li:last-child').addClass('disabled');
+                   }
+
+                  // $('.pagination li:eq(0)').removeClass('disabled');
+                   if(JsonData.paginate.prev_page_url !== null){
+                       $('.pagination li:eq(0)').removeClass('disabled')
+                       $('.pagination li:eq(0)').html('<a href="'+JsonData.paginate.prev_page_url+'">'+'«'+'</a>');
+                   }else{
+                       $('.pagination li:eq(0)').addClass('disabled');
+                       $('.pagination li:eq(0)').html('<span>'+'«'+'</span>');
+                   }
+
                }
            }
            });
@@ -73,11 +95,12 @@ $('.logoutform').click(function () {
 
     $('.getproduct').click(function () {
         var id = $(this).val();
+        var storeid= $('.getstoreid').attr('storeid');
         var token = $("input[name=_token]").val();
         $.ajax({
             url:'/getproductsbystore',
             type:'POST',
-            data:{id:id,_token:token},
+            data:{id:id,_token:token,storeid:storeid},
             success: function (data) {
                  var JsonData = $.parseJSON(data);
                  var html = '';
@@ -115,8 +138,6 @@ $('.logoutform').click(function () {
         $(".mycount").attr('id');
         $("#myModal").modal('show');
         $(".mycount").attr('id',productId);
-
-
     });
 
 
@@ -153,6 +174,8 @@ $('.logoutform').click(function () {
         var userid = $(this).val();
         var token = $("input[name=_token]").val();
         $('.admintypeselect').empty();
+        var datatable=$('#mydatatable').DataTable();
+        datatable.clear();
         if(userid !=0){
             $.ajax({
                 url:'/gettypeswithadmin',
@@ -162,14 +185,19 @@ $('.logoutform').click(function () {
                    var JsonData = $.parseJSON(data);
                    if(JsonData.products.length>0){
                        var html = '<option></option>';
+                       $('.admintypeselect').removeAttr("disabled");
                        $.each(JsonData.products,function (key,value) {
                            html += '<option value="'+value.type_id+'">'+value.typename+'</option>';
-
                        });
                        $('.admintypeselect').append(html);
                    }
                 }
             });
+        }else{
+            $('.admintypeselect').attr("disabled","disabled");
+            var datatable=$('#mydatatable').DataTable();
+            $('#mydatatable').dataTable().fnDestroy();
+            datatable.clear();
         }
     });
 
@@ -177,16 +205,17 @@ $('.logoutform').click(function () {
         var typeid = $(this).val();
         var lang =  $('.mytable').attr('lang')
         var token = $("input[name=_token]").val();
-        if(typeid !='noselect'){
+        var datatable=$('#mydatatable').DataTable();
+        var shopid = $('.adminselectshop').val();
+        if(typeid !='noselect' || shopid !=0){
+            datatable.clear();
             $.ajax({
                 url:'/getproductsbyadmin',
                 type:'POST',
-                data:{typeid:typeid,_token:token},
+                data:{typeid:typeid,_token:token,shopid:shopid},
                 success: function (data) {
                     var JsonData = $.parseJSON(data);
                     if(JsonData.getproducts.length>0){
-                        var datatable=$('#mydatatable').DataTable();
-                        datatable.clear();
                         var html = [];
                         $.each(JsonData.getproducts,function (key,value) {
                             html.push([value.product_name,value.product_content,value.product_price,'<img src="/products_images/'+value.product_image+'" width="100px" height="100px" style="border-radius: 8px">','<a href="/'+lang+'/updateproductbtadmin/'+value.product_id+'">Update Product</a>']);
@@ -232,8 +261,8 @@ $('.logoutform').click(function () {
 
     $('.searchproducts').click(function () {
         var product_type = $('select.typeselect option:selected').val();
-        var minprice = $('.minprice').val();
-        var maxprice = $('.maxprice').val();
+        var minprice = $('.min-slider-handle').attr('aria-valuenow');
+        var maxprice = $('.max-slider-handle').attr('aria-valuenow');
         var token = $("input[name=_token]").val();
         var language = $('.myproducts').attr('lang');
         $.ajax({
@@ -289,6 +318,92 @@ $('.logoutform').click(function () {
         }
     });
 
+    $('.getstoresbyservice').click(function () {
+        var typeid = $(this).val();
+        var token = $("input[name=_token]").val();
+        $.ajax({
+            url: '/getstoresbyservice',
+            type: 'post',
+            data: {_token: token, typeid: typeid},
+            success: function (data) {
+               if(data.getstores){
+                   $('.showstores').show();
+                   var html ='';
+                   $('.showedstores').empty();
+                   $.each(data.getstores,function (key,value) {
+                        html+='<div class="item  col-xs-4 col-lg-4" id="product_'+value.user_id+'">'+
+                            '<div class="thumbnail">'+
+                            '<img class="group list-group-image" width="200px" height="200px" src="/\post_images/'+value.image+'" alt="" />'+
+                            '<div class="caption">'+
+                            '<h4 class="group inner list-group-item-heading">'+value.name+'</h4>'+
+                            '<div class="row">'+
+                            '<div class="col-xs-12 col-md-6">'+
+                            '<button type="button" class="btn btn-success getproductsbyid" userid="'+value.user_id+'" typeid="'+value.type_id+'" >See</button>'+
+                            '</div>'+
+                            '</div>'+
+                            '</div>'+
+                            '</div>'+
+                            '</div>';
+                   });
+                   $('.showedstores').append(html);
+               }
+            }
+        });
+    });
+
+    $(document).on('click','.getproductsbyid',function () {
+       var typeid = $(this).attr('typeid');
+       var userid = $(this).attr('userid');
+       $('.setmydata').attr('typeid',typeid);
+       $('.setmydata').attr('userid',userid);
+        var token = $("input[name=_token]").val();
+       $.ajax({
+           url:'/getproductbystoreandtypeid',
+           type:'post',
+           data:{_token:token,typeid:typeid,userid:userid},
+           success:function (data) {
+               var Jsondata = $.parseJSON(data);
+               var html = '';
+               $('.setdata').empty();
+               $("#exampleModal").modal('show');
+               if(Jsondata.getproduct.length>0){
+                   $.each(Jsondata.getproduct,function (key,value) {
+                       html+='<div class="item  col-xs-4 col-lg-4" id="product_'+value.product_id+'">'+
+                           '<div class="thumbnail">'+
+                           '<img class="group list-group-image" width="200px" height="200px" src="/products_images/'+value.product_image+'" alt="" />'+
+                           '<div class="caption">'+
+                           '<h4 class="group inner list-group-item-heading">'+value.product_content+'</h4>'+
+                           '<div class="row">'+
+                           '<div class="col-xs-12 col-md-6">'+
+                           '<p class="lead">'+value.product_price+'$</p>'+
+                           '<button type="button" class="btn btn-success buyproductbyservice" id="'+value.product_id+'" >Buy</button>'+
+                           '</div>'+
+                           '</div>'+
+                           '</div>'+
+                           '</div>'+
+                           '</div>';
+
+                   });
+                   $('.setdata').html(html);
+               }
+           }
+       });
+    });
+
+
+    $(document).on('click','.buyproductbyservice',function () {
+        var productId = $(this).attr('id');
+        var count = 1;
+        var token = $("input[name=_token]").val();
+        $.ajax({
+            url:'/buyproduct',
+            type:'post',
+            data:{_token:token,productId:productId,count:count},
+            success:function (data) {
+                $("#exampleModal").modal('hide');
+            }
+        });
+    });
 
 
 

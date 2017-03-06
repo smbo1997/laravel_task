@@ -1,8 +1,16 @@
 @extends('layouts.app')
 
 @section('content')
+    <script src='https://www.google.com/recaptcha/api.js'></script>
 <div class="container">
     <div class="row">
+        @if(Session::has('error'))
+                <div class="col-sm-6 col-md-4 col-md-offset-4 col-sm-offset-4 " >
+                    <div id="charge-message" class="alert alert-danger">
+                        {{ Session::get('error') }}
+                    </div>
+                </div>
+        @endif
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
                 <div class="panel-heading">Login</div>
@@ -37,7 +45,9 @@
                                 @endif
                             </div>
                         </div>
-
+                        <div class="col-md-6 col-md-offset-4">
+                             <div class="g-recaptcha" data-sitekey="6Ldn1RcUAAAAADvBg6RcUUTEaUKTUXe_ZBw0vXFW"></div>
+                        </div>
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
                                 <div class="checkbox">

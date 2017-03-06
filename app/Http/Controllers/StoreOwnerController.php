@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Basket;
 use App\Chat;
 use App\Updateproduct;
 use Illuminate\Http\Request;
@@ -132,14 +133,12 @@ class StoreOwnerController extends Controller
     public function products(){
         $userId = Auth::user()->id;
         $getproductsTypes = Producttype::select('*')
-                                         ->where('user_id',$userId)
                                          ->get();
         $this->data['getproductsTypes']=$getproductsTypes;
         return view('storeproduct')->with($this->data);
     }
 
     public  function addnewproduct(Request $request){
-
         Validator::make($request->all(), [
             'productname' => 'required|max:16',
             'productcontent' => 'required|max:16',
@@ -182,14 +181,13 @@ class StoreOwnerController extends Controller
     public function seeproducts(){
         $userId = Auth::user()->id;
         $getproductsTypes = Producttype::select('*')
-            ->where('user_id',$userId)
-            ->get();
+                                        ->get();
         $productid = Producttype::select('*')
-            ->where('user_id',$userId)
             ->first();
         if ($productid !== null){
             $selectproducts = Product::select('*')
                 ->where('type_id',$productid->type_id)
+                ->where('user_id',$userId)
                 ->get();
         }
         else{
@@ -287,7 +285,7 @@ class StoreOwnerController extends Controller
 
     public function bouthproducts(Request $request,$lang){
         $userid = Auth::user()->id;
-           $get = Product::select('users.name','products.product_price','products.product_image','baskets.count','baskets.created_at')
+           $get = Product::select('users.name','products.product_price','products.product_image','baskets.basket_id','baskets.count','baskets.created_at')
                        ->where('products.user_id',$userid)
                         ->rightJoin('baskets','products.product_id','=','baskets.product_id')
                         ->where('baskets.status',1)
@@ -311,12 +309,22 @@ class StoreOwnerController extends Controller
 
 
     public function getproductsByprice(Request $request){
+        $userid = Auth::user()->id;
         $selectproducts = Product::select('*')
                                     ->where('type_id',$request->product_type)
+                                    ->where('user_id',$userid)
                                     ->where('product_price','>=',$request->minprice)
                                     ->where('product_price','<=',$request->maxprice)
                                     ->get();
 
         return json_encode(['productByPrice'=>$selectproducts]);
+    }
+
+    public function deleteboutproductbystore(Request $request,$lang,$basket_id){
+       $delete = Basket::where('basket_id',$basket_id)
+                ->delete();
+       if($delete == 1){
+           return redirect()->back();
+       }
     }
 }

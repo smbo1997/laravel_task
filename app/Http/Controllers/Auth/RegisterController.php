@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Illuminate\Auth\Events\Registered;
 
 class RegisterController extends Controller
 {
@@ -39,7 +40,7 @@ class RegisterController extends Controller
         return view('auth.register')->with($this->data);
     }
 
-    protected function valiydator(array $data)
+    protected function validator(array $data)
     {
         return Validator::make($data, [
             'name' => 'required|max:255',
@@ -56,11 +57,32 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-            'status'=>'user'
-        ]);
+
+            return User::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => bcrypt($data['password']),
+                'status' => 'user'
+            ]);
+
+    }
+
+
+    public function register(Request $request)
+    {
+        $token = $request->input('g-recaptcha-response');
+        if(strlen($token) > 0) {
+        $this->validator($request->all())->validate();
+
+        event(new Registered($user = $this->create($request->all())));
+
+        $this->guard()->login($user);
+
+        return $this->registered($request, $user)
+            ?: redirect($this->redirectPath());
+      }else{
+        $request->flashOnly('email');
+        return redirect()->back()->with('error','Are you Robot?');
+        }
     }
 }

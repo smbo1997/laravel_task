@@ -11,6 +11,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading" >About Store</div>
                         <div style="height: 500px; overflow: scroll; overflow-x: hidden">
+                            <input type="hidden" storeid="{{$aboutStore->user_id}}" class="getstoreid">
                             <p style="margin-left: 14px; margin-top: 5px">{{$aboutStore->about}}</p>
                                     @if(!empty($getTypes))
                                         @foreach($getTypes as $key=>$value)

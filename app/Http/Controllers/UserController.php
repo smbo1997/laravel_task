@@ -57,6 +57,9 @@ class UserController extends Controller
                                 ->get();
 
            $this->data['gotproducts']=$gotproducts;
+
+//           $aa = User::with('chat')->where('id',17)->get();
+//           dd($aa);
         return view('mycharts')->with($this->data);
     }
 

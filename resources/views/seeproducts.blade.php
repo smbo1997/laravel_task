@@ -1,14 +1,12 @@
 @extends('layouts.app')
 @section('content')
 
-
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/css/bootstrap-slider.css" rel="stylesheet">
 
     <div class="container">
         <br class="row">
             <div data-role="page">
                 <div data-role="main" class="ui-content">
-
-
                         <div class="form-group">
                             <label for="email" class="col-md-4 control-label">Select Product Type</label>
                             <div class="col-md-6">
@@ -22,18 +20,10 @@
                                 </select>
                             </div>
                         </div><br><br><br><br>
-
-
-                        {{--<div data-role="rangeslider" style="margin-top: 55px;">--}}
-
-                            {{--<input type="range" class="minprice" name="price-min" id="price-min" value="200" min="0" max="10000">--}}
-
-                            {{--<input type="range" class="maxprice" name="price-max" id="price-max" value="800" min="0" max="10000">--}}
-                        {{--</div>--}}
-                    {{--<button type="button" data-inline="true" class="searchproducts">Search</button>--}}
-
-
                     @if(!$selectproducts->isEmpty())
+                    <b>$ 0</b> <input id="ex2" type="text" class="span2" value="" data-slider-min="10" data-slider-max="5000" data-slider-step="5" data-slider-value="[1900,2500]"/> <b>$ 5000</b></div><br><br>
+                    <button type="button" data-inline="true" class="btn btn-primary searchproducts" >Search</button>
+
                     <table class="table table-striped" style="margin-top: 125px">
                         <thead>
                         <tr>
@@ -63,6 +53,12 @@
             </div>
         </div>
     </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/bootstrap-slider.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#ex2").slider({});
+        });
+    </script>
 
 @endsection
 

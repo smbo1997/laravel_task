@@ -4,12 +4,14 @@
     <div class="container">
         <div class="row">
             @if (count($errors) > 0)
+                <div class="col-md-8 col-md-offset-2">
                 <div class="alert alert-danger">
                     <ul>
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
                     </ul>
+                </div>
                 </div>
             @endif
 
@@ -23,7 +25,7 @@
                             <label for="email" class="col-md-4 control-label">Card No:</label>
 
                             <div class="col-md-6">
-                                <input  type="text" class="form-control" name="cardno" required>
+                                <input  type="text" class="form-control" name="cardno" >
                             </div>
                         </div>
 
@@ -31,7 +33,7 @@
                             <label for="email" class="col-md-4 control-label">Exp Month:</label>
 
                             <div class="col-md-6">
-                                <input  type="text" class="form-control" name="expmonth" required>
+                                <input  type="text" class="form-control" name="expmonth" >
                             </div>
                         </div>
 
@@ -39,7 +41,7 @@
                             <label for="email" class="col-md-4 control-label">CVC No:</label>
 
                             <div class="col-md-6">
-                                <input  type="text" class="form-control" name="cvc" required>
+                                <input  type="text" class="form-control" name="cvc" >
                             </div>
                         </div>
 

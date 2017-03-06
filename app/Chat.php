@@ -11,6 +11,6 @@ class Chat extends Model
 
 
     public  function messages(){
-        return $this->belongsTo('App\User','id','to_id');
+        return $this->belongsTo('App\User','to_id');
     }
 }
