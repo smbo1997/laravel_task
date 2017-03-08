@@ -20,15 +20,21 @@ Route::get('/', function () {
 
 
 //Auth::routes();
-$this->get('{locale}/login', 'Auth\LoginController@showLoginForm')->name('login');
+$this->get('{locale}/login', 'Auth\LoginController@showLoginForm')->middleware('guest')->name('login');
 $this->post('{locale}/login', 'Auth\LoginController@login');
 $this->post('{locale}/logout', 'Auth\LoginController@logout')->name('logout');
-$this->get('{locale}/register', 'Auth\RegisterController@showRegistrationForm');
+$this->get('{locale}/register', 'Auth\RegisterController@showRegistrationForm')->middleware('guest');
 $this->post('{locale}/register', 'Auth\RegisterController@register');
 $this->get('{locale}/password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm');
 $this->post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
 $this->get('{locale}/password/reset/{token}', 'Auth\ResetPasswordController@showResetForm');
 $this->post('password/reset', 'Auth\ResetPasswordController@reset');
+
+$this->get('{locale}/notactivate', 'ProfileActivateController@notactivate');
+
+//Account activation
+Route::get('{locale}/activate/{user_id}', 'ProfileActivateController@index');
+Route::get('{locale}/activated/{user_id}', 'ProfileActivateController@activated');
 
 //user
 Route::get('{locale}/charts', 'UserController@showcharts');

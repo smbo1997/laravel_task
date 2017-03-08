@@ -26,11 +26,12 @@ class LoginController extends Controller
     public function __construct(Request $request)
     {
         $this->middleware('guest', ['except' => 'logout']);
+
         $language = $request->segment(1);
         $this->language=$language;
         $this->data['language']=$language;
         App::setLocale($language);
-        $this->redirectTo=$language.'/user_home';
+        $this->redirectTo=$language.'/notactivate';
     }
 
     public function showLoginForm()
@@ -43,7 +44,6 @@ class LoginController extends Controller
         $token = $request->input('g-recaptcha-response');
         if(strlen($token) > 0) {
             $this->validateLogin($request);
-
             if ($this->hasTooManyLoginAttempts($request)) {
                 $this->fireLockoutEvent($request);
 

@@ -1,14 +1,15 @@
 @extends('layouts.app')
 @section('content')
+    <div class="container">
+    @if(!$getusers->isEmpty())
     <link href="{{URL::asset('css/chatCss.css')}}" rel="stylesheet">
     <script src="{{URL::asset('js/chat.js')}}" ></script>
-    <div class="container">
         <div class="row" en="{{$language}}">
 
         </div>
         <div class="row">
             <div class="conversation-wrap col-lg-3">
-                @if(!empty($getusers))
+
                     @foreach($getusers as $key=>$value)
                         <div class="media conversation getstore" id="{{$value->from_id}}" toname="{{$value->name}}">
                             <a class="pull-left" href="#">
@@ -20,7 +21,7 @@
                             </div>
                         </div>
                     @endforeach
-                @endif
+
 
             </div>
 
@@ -34,5 +35,9 @@
                 </div>
             </div>
         </div>
+
+        @else
+            <p style="color: red;font-size: 20px;">You hav'nt Messages</p>
+    @endif
     </div>
 @endsection

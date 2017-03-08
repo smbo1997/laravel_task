@@ -6,8 +6,18 @@ use Closure;
 use Illuminate\Support\Facades\Auth;
 use Gate;
 use App\User;
+use Illuminate\Http\Request;
+
+
+
 class RedirectIfAuthenticated
 {
+    private $language;
+    public function __construct(Request $request)
+    {
+        $this->language =$request->segment(1);
+    }
+
     /**
      * Handle an incoming request.
      *
@@ -18,18 +28,18 @@ class RedirectIfAuthenticated
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        if (Auth::guard($guard)->check()) {
+        if ($a = Auth::guard($guard)->check()) {
+//            $user = Auth::user()->activate;
+//
+//            if ($user == 0){
+//                return redirect('/'.$this->language.'/notactivate');
+//            }else{
+                return redirect('/'. $this->language.'/user_home');
 
-            $language = $request->segment(1);
-            if(Gate::check('is_admin', new User()) == true){
-                return redirect($language.'/admin');
-            }
 
-            if(Gate::check('is_store', new User()) == true){
-                return redirect($language.'/store_owner');
-            }
         }
 
         return $next($request);
     }
+
 }
