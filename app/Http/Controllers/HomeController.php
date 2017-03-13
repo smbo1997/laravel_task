@@ -35,6 +35,7 @@ class HomeController extends Controller
     public function index()
 
     {
+
         if(Gate::check('is_admin', new User()) == true){
             if (Auth::user()->store_id == 0){
                 return redirect($this->language.'/admin');
