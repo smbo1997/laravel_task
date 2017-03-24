@@ -1,8 +1,6 @@
-//glyphicon icon_minim glyphicon-minus
-
-
 $(document).on('click', '.panel-heading span.icon_minim', function (e) {
     var $this = $(this);
+    console.log($this);
     if (!$this.hasClass('panel-collapsed')) {
         $this.parents('.panel').find('.panel-body').slideUp();
         $this.addClass('panel-collapsed');
@@ -36,6 +34,8 @@ $(document).on('click', '.icon_close', function (e) {
 
 $('.messagecontent').keyup(function (e) {
     $('.panel-body').slideDown();
+    $('.panel-heading span.icon_minim').addClass('panel-collapsed');
+    $('.panel-heading span.icon_minim').removeClass('glyphicon-plus').addClass('glyphicon-minus');
     $(".sendmessage").removeAttr('disabled');
     var messagecontent = $('.messagecontent').val();
     if(e.keyCode == 8 || e.keyCode == 46){
@@ -64,7 +64,6 @@ function smalchat() {
             var gotmessage = JSON.parse(getmymessage);
             var html ='';
             $.each(gotmessage, function (key,value) {
-                console.log(value);
                 html+= '<div class="row msg_container base_receive">'+
                     '<div class="col-md-2 col-xs-2 avatar">'+
                     '<img src="http://www.bitrebels.com/wp-content/uploads/2011/02/Original-Facebook-Geek-Profile-Avatar-1.jpg" class=" img-responsive ">'+
@@ -81,12 +80,18 @@ function smalchat() {
 
     if (getitem == null) {
         setTimeout(slidedown, 2000);
+    }else{
+        $('.panel-heading span.icon_minim').addClass('panel-collapsed');
+        $('.panel-heading span.icon_minim').removeClass('glyphicon-minus').addClass('glyphicon-plus');
     }
 }
 }
 
 function slidedown(){
     $('.panel-body').slideDown();
+    var audio = document.getElementById('playsound');
+    audio.play();
+
 }
 
 setTimeout(smalchat, 3000);
@@ -187,14 +192,10 @@ setTimeout(smalchat, 3000);
         var click = $(".sendmessage").attr('clicked');
         if($('.messagecontent').val() == ''){
             $('.panel-body').slideUp();
-            //setTimeout(slideclose,2000);
             localStorage.setItem("action", 1);
+            $('.panel-heading span.icon_minim').addClass('panel-collapsed');
+            $('.panel-heading span.icon_minim').removeClass('glyphicon-minus').addClass('glyphicon-plus');
         }
     }
-
-    // function slideclose(){
-    //     $( "#chat_window_1" ).hide("Fold");
-    // }
-
 
 setTimeout(clickedfunction,20000);

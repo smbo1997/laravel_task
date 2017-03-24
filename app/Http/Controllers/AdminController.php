@@ -51,7 +51,6 @@ class AdminController extends Controller
 
     public function addimage(Request $request){
 
-
         $validator= Validator::make($request->all(), [
             'storeownername' => 'required|',
             'email' => 'required|email|max:255|unique:users',
@@ -294,11 +293,11 @@ class AdminController extends Controller
     public function addnewtype(Request $request){
         $userid = Auth::user()->id;
         Validator::make($request->all(), [
-            'typename' => 'required|max:255|nullable|unique:producttypes',
+            'typename' => 'required|max:255|nullable|alpha|unique:producttypes',
         ])->validate();
         $createtype = Producttype::create([
                 'user_id'=>$userid,
-                'typename'=>$request->addtype
+                'typename'=>$request->typename
             ]);
         return redirect()->back();
     }

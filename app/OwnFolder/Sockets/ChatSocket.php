@@ -30,7 +30,6 @@ class ChatSocket extends BaseSocket{
 
     function onMessage(ConnectionInterface $from, $msg){
         $num = count($this->clients)-1;
-            sprintf('Connection sending message'."\n",$from->resourceId,$msg,$num,$num == 1 ? '':'s');
 
         $getmessage = json_decode($msg);
            Chat::create([

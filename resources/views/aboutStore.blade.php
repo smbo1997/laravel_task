@@ -1,5 +1,4 @@
 @extends('strorelayouts.storeapp')
-
 @section('storecontent')
     {{ csrf_field() }}
     <div class="container">
@@ -46,4 +45,7 @@
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-growl/1.0.0/jquery.bootstrap-growl.min.js"></script>
 @endsection

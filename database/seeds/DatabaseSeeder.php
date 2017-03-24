@@ -17,7 +17,8 @@ class DatabaseSeeder extends Seeder
             'email'=>'admin@mail.ru',
             'password'=>bcrypt('admin'),
             'status'=>'admin',
-            'store_id'=>0
+            'store_id'=>0,
+            'activate'=>1
         ]);
     }
 }

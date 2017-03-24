@@ -1,5 +1,6 @@
 $(document).ready(function () {
-    var conn = new WebSocket('ws://task.dev:8080');
+
+    var conn = new WebSocket('ws://127.0.0.1:8080');
     conn.onopen =function (e) {
         console.log('connected successfuly');
     };

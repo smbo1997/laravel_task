@@ -14,9 +14,10 @@ $(document).ready(function () {
        $.ajax({
            url:'?page=' + page,
            type:'get',
+           beforeSend: function() { $('#loader').show(); },
+           complete: function() { $('#loader').hide(); },
            success: function (data) {
                var JsonData = $.parseJSON(data);
-               console.log(JsonData.paginate);
                if(JsonData.paginate.data){
                    var html = '';
                    $.each(JsonData.paginate.data,function (key,value) {
@@ -157,8 +158,24 @@ $('.logoutform').click(function () {
                      var b =  eval(parseInt(a) + parseInt(count));
                     $('.mybasket').text(b);
                     $('.mybasket').attr('count',b);
+                    $.bootstrapGrowl(' Your purchases were completed successfully.',{
+                        type: 'success',
+                        delay: 6000,
+                    });
 
-                 }
+                 },
+                error: function(data){
+                    var errors = data.responseJSON;
+                    if(errors.error){
+                        $(".mycount").val('');
+                        $("#myModal").modal('hide');
+                        $.bootstrapGrowl('Login please',{
+                            type: 'danger',
+                            delay: 6000,
+                        });
+                    }
+                }
+
             });
         }
 
@@ -399,12 +416,37 @@ $('.logoutform').click(function () {
             url:'/buyproduct',
             type:'post',
             data:{_token:token,productId:productId,count:count},
-            success:function (data) {
-                $("#exampleModal").modal('hide');
+            dataType: 'json',
+            success:function (response) {
+                $.bootstrapGrowl(' Your purchases were completed successfully.',{
+                    type: 'success',
+                    delay: 6000,
+                });
+                // $(".mysuccessal").show();
+                // setTimeout(closeSuccess, 6000);
+            },
+            error: function(data){
+            var errors = data.responseJSON;
+            if(errors.error){
+                $.bootstrapGrowl('Login please',{
+                    type: 'danger',
+                    delay: 6000,
+                });
+                // $(".mydangeraler").show();
+                // setTimeout(closeError, 6000);
             }
+        }
         });
     });
 
+    function closeError() {
+        $(".mydangeraler").hide();
+    }
 
+    function closeSuccess() {
+        $(".mysuccessal").hide();
+    }
 
 });
+
+

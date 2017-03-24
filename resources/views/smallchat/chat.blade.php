@@ -1,5 +1,10 @@
 
     <div class="row chat-window col-xs-5 col-md-3" id="chat_window_1" user="{{Auth::user()->id}}" style="display: none">
+        <div class="chatnotification" style="display: none">
+            <audio controls id="playsound">
+                <source src="{{URL::asset('chat_sound/chat.wav')}}" type="audio/wav">
+            </audio>
+        </div>
         <div class="col-xs-12 col-md-12">
             <div class="panel panel-default">
                 <div class="panel-heading top-bar">
@@ -30,7 +35,6 @@
                     <div class="addcontent">
 
                     </div>
-
                 </div>
                 <div class="panel-footer">
                     <div class="input-group">

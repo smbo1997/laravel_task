@@ -31,7 +31,7 @@ class UserController extends Controller
     private  $language;
     public  function __construct(Request $request)
     {
-        $this->middleware('auth');
+         $this->middleware('auth');
         $language = $request->segment(1);
         $this->data['language']=$language;
         App::setLocale($language);
@@ -58,34 +58,32 @@ class UserController extends Controller
 
            $this->data['gotproducts']=$gotproducts;
 
-//           $aa = User::with('chat')->where('id',17)->get();
-//           dd($aa);
         return view('mycharts')->with($this->data);
     }
 
 
     public function buyproduct(Request $request){
         $userid = Auth::user()->id;
-        if($userid){
+        if($userid) {
             $getbasketsbyuserid = Basket::select('*')
-                     ->where('user_id',$userid)
-                     ->where('product_id',$request->productId)
-                     ->where('status',0)
-                    ->first();
-            if($getbasketsbyuserid == null){
+                ->where('user_id', $userid)
+                ->where('product_id', $request->productId)
+                ->where('status', 0)
+                ->first();
+            if ($getbasketsbyuserid == null) {
                 Basket::create([
-                    'user_id'=>$userid,
-                    'product_id'=>$request->productId,
-                    'count'=>$request->count,
-                    'status'=>0
+                    'user_id' => $userid,
+                    'product_id' => $request->productId,
+                    'count' => $request->count,
+                    'status' => 0
                 ]);
+            } else {
+                Basket::where('user_id', $userid)
+                    ->where('product_id', $request->productId)
+                    ->where('status', 0)
+                    ->update(['count' => $getbasketsbyuserid->count + $request->count]);
             }
-            else{
-                Basket::where('user_id',$userid)
-                    ->where('product_id',$request->productId)
-                    ->where('status',0)
-                    ->update(['count'=>$getbasketsbyuserid->count+$request->count]);
-            }
+            return response(['data' => 1]);
         }
 
     }
@@ -122,27 +120,14 @@ class UserController extends Controller
         $useremail = Auth::user()->email;
         $userId = Auth::user()->id;
         $amount = $request->total;
-        $payment->addOrder($userId,$amount);
+        $getcard = Bankcard::select('*')
+            ->where('user_id',$userId)
+            ->first();
+        if($getcard == null){
+            return response(['data'=>'0']);
+        }else{
+            $payment->addOrder($userId,$amount);
 
-        Mail::send('emails.send', ['subject'=>'Thank you for shops'],function ($message) use($useremail)
-        {
-            $message->from('smbtest97@gmail.com', 'Message');
-            $message->to($useremail);
-
-        });
-
-        $buy =  Basket::where('basket_id',$request->basketid)
-                            ->update(['status'=>1]);
-
-        if ($buy){
-            return response(['data'=>1]);
-        }
-    }
-
-    public function buyall(Request $request, Payment $payment){
-        $data = $request->data;
-        if(!empty($data)){
-            $useremail = Auth::user()->email;
             Mail::send('emails.send', ['subject'=>'Thank you for shops'],function ($message) use($useremail)
             {
                 $message->from('smbtest97@gmail.com', 'Message');
@@ -150,15 +135,45 @@ class UserController extends Controller
 
             });
 
-            foreach ($data as $key=>$value){
-                Basket::where('basket_id',$value)
-                    ->where('status',0)
-                    ->update(['status'=>1]);
+            $buy =  Basket::where('basket_id',$request->basketid)
+                ->update(['status'=>1]);
+
+            if ($buy){
+                return response(['data'=>'1']);
             }
-
-            return response(['data'=>1]);
         }
+    }
 
+    public function buyall(Request $request, Payment $payment){
+        $userId = Auth::user()->id;
+        if(!empty($userId)){
+            $data = $request->data;
+            $getcard = Bankcard::select('*')
+                ->where('user_id',$userId)
+                ->first();
+            if($getcard == null){
+                return response(['data'=>'0']);
+            }else{
+                $useremail = Auth::user()->email;
+                Mail::send('emails.send', ['subject'=>'Thank you for shops'],function ($message) use($useremail)
+                {
+                    $message->from('smbtest97@gmail.com', 'Message');
+                    $message->to($useremail);
+
+                });
+                $amount = $request->lastallprice;
+                if(!empty($data)){
+                    foreach ($data as $key=>$value){
+                        Basket::where('basket_id',$value)
+                            ->where('status',0)
+                            ->update(['status'=>1]);
+                    }
+                }
+                $payment->addOrder($userId,$amount);
+
+                return response(['data'=>'1']);
+            }
+        }
     }
 
     public  function mycard(Request $request){

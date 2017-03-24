@@ -8,14 +8,16 @@ use App\Chat;
 use App\User;
 use Illuminate\Support\Facades\App;
 use App\Adminchat;
+use Illuminate\Support\Facades\Artisan;
 
 class ChatController extends Controller
 {
     private  $data = array();
     private  $language;
-    public  function __construct(Request $request)
+    public  function __construct(Request $request,Artisan $artisan)
     {
         $this->middleware('auth');
+        //$artisan::call('chatserver:go');
         $language = $request->segment(1);
         $this->data['language']=$language;
         App::setLocale($language);

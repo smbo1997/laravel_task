@@ -1,6 +1,7 @@
 @extends('strorelayouts.storeapp')
 
 @section('storecontent')
+
     <div class="container">
         <div class="row">
             {{ csrf_field() }}
@@ -43,9 +44,18 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <div class="mydangeraler" style="display: none">
+                        <div class="alert alert-danger">
+                            Login please.
+                        </div>
+                    </div>
+                    <div class="mysuccessal" style="display: none">
+                        <div class="alert alert-success">
+                            Your purchases were successfully completed.
+                        </div>
+                     </div>
                     <input type="hidden" class="setmydata">
                     <div class="setdata" style="height: 400px; overflow: auto;">
-
                     </div>
                 </div><br>
                 <div class="modal-footer">
@@ -54,4 +64,5 @@
             </div>
         </div>
     </div>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-growl/1.0.0/jquery.bootstrap-growl.min.js"></script>
 @endsection

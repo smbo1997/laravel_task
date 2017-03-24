@@ -1,7 +1,7 @@
 @extends('strorelayouts.storeapp')
 @section('storecontent')
     <div class="container">
-
+        <p class="notbuy" style="color: red;font-size: 20px"></p>
         @if(!$gotproducts->isEmpty())
         <div class="row" en="{{$language}}">
             <button class="btn btn-success buyall" style="margin-top: 25px">Buy All</button>

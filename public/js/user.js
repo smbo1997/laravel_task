@@ -30,7 +30,10 @@ $(document).ready(function () {
             type:'POST',
             data:{_token:token,basketid:basketid,total:total},
             success: function (data) {
-                if(data.data = 1){
+                if(data.data == '0'){
+                    $('.notbuy').text('you can not buy product because you have not bannk card!');
+                }
+                if(data.data == '1'){
                     $('#myProduct_'+basketid).remove();
                 }
             }
@@ -41,21 +44,27 @@ $(document).ready(function () {
         var data = [];
         var token = $("input[name=_token]").val();
        var myfind =  $(".myactions").find("button");
+       var allprice =[];
        if(myfind.length>0){
            $.each(myfind,function (key,value) {
                data.push($(value).val());
+               allprice.push($('.count_'+$(value).val()).attr('id')*$('.price_'+$(value).val()).attr('id'))
            });
+           var lastallprice = allprice.reduce(function(a, b) { return a + b; }, 0);
            $.ajax({
                url:'/buyall',
                type:'POST',
-               data:{_token:token,data:data},
+               data:{_token:token,data:data,lastallprice:lastallprice},
                success: function (data) {
-                   if(data.data = 1){
+                   if(data.data == '1'){
                        $('.clearetable').empty();
+                   }
+                   if(data.data == '0'){
+                       $('.notbuy').text('you can not buy product because you have not bannk card!');
                    }
                }
            });
        }
 
-    })
+    });
 });

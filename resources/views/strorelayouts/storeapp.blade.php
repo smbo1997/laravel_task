@@ -13,6 +13,7 @@
     <!-- Styles -->
     <link href="{{URL::asset('/css/app.css')}}" rel="stylesheet">
     <link href="{{URL::asset('/css/mycss.css')}}" rel="stylesheet">
+    <link href="{{URL::asset('/css/loading.css')}}" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -29,12 +30,19 @@
 </head>
 <body>
 <div id="app">
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container">
             <div class="navbar-header">
-                <a class="navbar-brand" href="/{{$language}}">{{trans('translate.shop')}}</a>
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navbar-collapse">
+                    <span class="sr-only">Toggle Navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
             </div>
+            <div class="collapse navbar-collapse" id="app-navbar-collapse">
             <ul class="nav navbar-nav">
+                <a class="navbar-brand" href="/{{$language}}">{{trans('translate.shop')}}</a>
                 <li class="active"><a href="/{{$language}}">{{trans('translate.home')}}</a></li>
                 <li><a href="/{{$language}}/service">{{trans('translate.service')}}</a></li>
                 @can('is_user',new \App\User())
@@ -42,7 +50,7 @@
                     <li><a href="{{url($language.'/chat')}}">Chat</a></li>
                 @endcan
             </ul>
-            <ul class="nav navbar-nav" style="float: right;">
+            <ul class="nav navbar-nav navbar-right">
                 <li><a href="/en/{{$current_action}}"><img src="{{URL::asset('images/en.gif')}}"/></a></li>
                 <li><a href="/ru/{{$current_action}}"><img src="{{URL::asset('images/ru.gif')}}"/></a></li>
                 <li><a href="/am/{{$current_action}}"><img src="{{URL::asset('images/am.gif')}}"/></a></li>
@@ -74,7 +82,10 @@
 
             </ul>
         </div>
+        </div>
     </nav>
+
+
     @yield('storecontent')
 
     @can('is_user',new \App\User())

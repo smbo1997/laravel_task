@@ -9,6 +9,8 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Auth;
+use Mail;
 
 class RegisterController extends Controller
 {
@@ -31,7 +33,8 @@ class RegisterController extends Controller
         $language = $request->segment(1);
         $this->data['language']=$language;
         App::setLocale($language);
-        $this->redirectTo= $language.'/user_home';
+        $this->redirectTo=$language.'/notactivate';
+
     }
 
 
@@ -57,32 +60,38 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-
-            return User::create([
+            return $a = User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'password' => bcrypt($data['password']),
-                'status' => 'user'
+                'status' => 'user',
+                'activate'=>0
             ]);
+
 
     }
 
 
+
     public function register(Request $request)
     {
-        $token = $request->input('g-recaptcha-response');
-        if(strlen($token) > 0) {
+
         $this->validator($request->all())->validate();
 
         event(new Registered($user = $this->create($request->all())));
+            $id = $user->id;
+             $to_mail= $user->email;
+            $from_name = 'Store Admin';
+            Mail::send('emails.activate', ['subject'=>$id],function ($message) use($to_mail)
+            {
+                $message->from('smbtest97@gmail.com', 'Message');
+                $message->to($to_mail)->subject('Account activation');
 
+            });
         $this->guard()->login($user);
 
         return $this->registered($request, $user)
             ?: redirect($this->redirectPath());
-      }else{
-        $request->flashOnly('email');
-        return redirect()->back()->with('error','Are you Robot?');
-        }
+
     }
 }
