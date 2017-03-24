@@ -26,6 +26,7 @@ class ProfileActivateController extends Controller
                    ->where('id',$user_id)
                     ->first();
        if ($getuser->activate == 1){
+
            return view('errors.404')->with(['lang'=>$locale]);
        }else{
            return view('activate')->with(['id'=>$user_id,'lang'=>$locale]);
